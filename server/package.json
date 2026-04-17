@@ -1,0 +1,16 @@
+{
+  "name": "server",
+  "description": "Backend for gift project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.20.0"
+  },
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
