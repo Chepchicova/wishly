@@ -1,0 +1,122 @@
+.site-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.65rem clamp(1rem, 4vw, 2rem);
+  margin: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+.site-header.glass-bar {
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+.logo {
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  color: #fafafa;
+  text-decoration: none;
+  justify-self: start;
+  line-height: 1;
+}
+
+.logo-mark {
+  color: #ede986;
+  font-weight: 700;
+}
+
+.header-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.35rem, 4vw, 2.5rem);
+  justify-self: center;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.nav-link:hover {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.7);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.profile-block {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  justify-self: end;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.auth-open-button {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+}
+
+.nav-link--active {
+  color: #ffffff;
+}
+
+.profile-block:hover {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.profile-block:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.7);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.profile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .logo,
+  .header-nav,
+  .profile-block {
+    justify-self: center;
+  }
+
+  .header-nav {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

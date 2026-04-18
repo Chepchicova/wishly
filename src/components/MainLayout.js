@@ -1,109 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import './MainLayout.css';
+import './AppShell.css';
+import './SharedUi.css';
 
-import iconArt from '../assets/wishlist-icons/art.png';
-import iconBalloon from '../assets/wishlist-icons/balloon.png';
-import iconBasic from '../assets/wishlist-icons/basic.png';
-import iconBirthday from '../assets/wishlist-icons/birthday.png';
-import iconBook from '../assets/wishlist-icons/book.png';
-import iconCarnival from '../assets/wishlist-icons/carnival.png';
-import iconGame from '../assets/wishlist-icons/game.png';
-import iconGift from '../assets/wishlist-icons/gift.png';
-import iconHalloween from '../assets/wishlist-icons/halloween.png';
-import iconHeart from '../assets/wishlist-icons/heart.png';
-import iconHome from '../assets/wishlist-icons/home.png';
-import iconMusic from '../assets/wishlist-icons/music.png';
-import iconNewyear from '../assets/wishlist-icons/newyear.png';
-import iconParty from '../assets/wishlist-icons/party.png';
-import iconSport from '../assets/wishlist-icons/sport.png';
-import iconStar from '../assets/wishlist-icons/star.png';
-import iconStudy from '../assets/wishlist-icons/study.png';
-import iconTravel from '../assets/wishlist-icons/travel.png';
-import iconValentine from '../assets/wishlist-icons/valentine.png';
-import iconWedding from '../assets/wishlist-icons/wedding.png';
-import iconWork from '../assets/wishlist-icons/work.png';
-
-const navigationLinks = [
-  { href: '/wishlists', label: 'Мои вишлисты' },
-  { href: '/friends', label: 'Друзья' },
-  { href: '/gifts', label: 'Подарки друзьям' },
-  { href: '/ai', label: 'AI-помощник' },
-];
-
-function formatBirthdayForDisplay(value) {
-  if (!value) {
-    return '';
-  }
-  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (match) {
-    return `${match[1]}.${match[2]}.${match[3]}`;
-  }
-  return String(value).slice(0, 10).replace(/-/g, '.');
-}
-
-function formatEventDateForDisplay(value) {
-  if (!value) {
-    return '';
-  }
-  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (!match) {
-    return String(value);
-  }
-  return `${match[3]}.${match[2]}.${match[1]}`;
-}
-
-const wishlistIconUrlByCode = {
-  basic: iconBasic,
-  birthday: iconBirthday,
-  newyear: iconNewyear,
-  valentine: iconValentine,
-  wedding: iconWedding,
-  party: iconParty,
-  gift: iconGift,
-  balloon: iconBalloon,
-  heart: iconHeart,
-  star: iconStar,
-  halloween: iconHalloween,
-  carnival: iconCarnival,
-  book: iconBook,
-  art: iconArt,
-  sport: iconSport,
-  travel: iconTravel,
-  music: iconMusic,
-  home: iconHome,
-  work: iconWork,
-  game: iconGame,
-  study: iconStudy,
-};
-
-function getWishlistIconUrl(iconCode) {
-  const key = String(iconCode || 'basic').toLowerCase();
-  return wishlistIconUrlByCode[key] || wishlistIconUrlByCode.basic;
-}
-
-const wishlistIconOptions = [
-  { code: 'basic', label: 'Обычный' },
-  { code: 'birthday', label: 'День рождения' },
-  { code: 'newyear', label: 'Новый год' },
-  { code: 'valentine', label: 'День влюблённых' },
-  { code: 'wedding', label: 'Свадьба' },
-  { code: 'party', label: 'Вечеринка' },
-  { code: 'gift', label: 'Подарок' },
-  { code: 'balloon', label: 'Шарик' },
-  { code: 'heart', label: 'Сердце' },
-  { code: 'star', label: 'Звезда' },
-  { code: 'halloween', label: 'Хэллоуин' },
-  { code: 'carnival', label: 'Карнавал' },
-  { code: 'book', label: 'Книги' },
-  { code: 'art', label: 'Искусство' },
-  { code: 'sport', label: 'Спорт' },
-  { code: 'travel', label: 'Путешествия' },
-  { code: 'music', label: 'Музыка' },
-  { code: 'home', label: 'Дом' },
-  { code: 'work', label: 'Работа' },
-  { code: 'game', label: 'Игры' },
-  { code: 'study', label: 'Учёба' },
-];
+import AuthModal from './AuthModal';
+import PrivacyModal from './PrivacyModal';
+import SiteFooter from './SiteFooter';
+import SiteHeader from './SiteHeader';
+import CreateWishlistPage from '../pages/CreateWishlistPage';
+import ProfilePage from '../pages/ProfilePage';
+import WishlistsPage from '../pages/WishlistsPage';
+import { getWishlistIconUrl } from '../constants/wishlistIcons';
+import { formatEventDateForDisplay } from '../utils/dateFormat';
 
 export default function MainLayout() {
   const savedUser = localStorage.getItem('auth_user');
@@ -412,16 +319,16 @@ export default function MainLayout() {
       return;
     }
 
-    let savedUser;
+    let parsedSavedUser;
     try {
-      savedUser = JSON.parse(savedJson);
+      parsedSavedUser = JSON.parse(savedJson);
     } catch {
       localStorage.removeItem('auth_user');
       setCurrentUser(null);
       return;
     }
 
-    if (!savedUser || !savedUser.id_user) {
+    if (!parsedSavedUser || !parsedSavedUser.id_user) {
       return;
     }
 
@@ -429,7 +336,7 @@ export default function MainLayout() {
 
     async function validateSavedUserStillExists() {
       try {
-        const response = await fetch(`http://localhost:5000/api/profile/${savedUser.id_user}`);
+        const response = await fetch(`http://localhost:5000/api/profile/${parsedSavedUser.id_user}`);
         if (cancelled) {
           return;
         }
@@ -612,626 +519,94 @@ export default function MainLayout() {
 
   return (
     <div className="app-shell">
-      <header className="site-header glass-bar">
-        <a href="/" className="logo">
-          <span className="logo-mark">WISH</span>LY
-        </a>
-        <nav className="header-nav" aria-label="Основная навигация">
-          {navigationLinks.map(({ href, label }) => (
-            <a
-              key={href}
-              href={href}
-              className={`nav-link${
-                currentPathname.startsWith(href) || (href === '/wishlists' && currentPathname === '/')
-                  ? ' nav-link--active'
-                  : ''
-              }`}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-        {currentUser ? (
-          <a
-            href="/profile"
-            className={`profile-block${currentPathname.startsWith('/profile') ? ' nav-link--active' : ''}`}
-          >
-            <span className="profile-icon" aria-hidden>
-              <svg viewBox="0 0 24 24" width={22} height={22} fill="none">
-                <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.75" />
-                <path
-                  d="M5 19.5c0-3.5 3.5-5.5 7-5.5s7 2 7 5.5"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-            <span className="profile-label">профиль</span>
-          </a>
-        ) : (
-          <button type="button" className="profile-block auth-open-button" onClick={openLoginModal}>
-            войти
-          </button>
-        )}
-      </header>
+      <SiteHeader
+        currentPathname={currentPathname}
+        currentUser={currentUser}
+        onOpenLogin={openLoginModal}
+      />
 
       <main className="site-main">
         {showWishlistsMainView && (
-          <section className="wishlists-page">
-            <div className="wishlists-head">
-              <div>
-                <h1 className="wishlists-title">Мои вишлисты</h1>
-                <p className="wishlists-subtitle">
-                  Создавайте и организуйте свои списки желаний
-                </p>
-              </div>
-              {currentUser ? (
-                <a href="/wishlists/new" className="action-btn primary-btn wishlists-new-link">
-                  + Новый вишлист
-                </a>
-              ) : (
-                <button type="button" className="action-btn primary-btn" onClick={openLoginModal}>
-                  + Новый вишлист
-                </button>
-              )}
-            </div>
-
-            <div className="wishlists-panel glass-bar">
-              <aside className="wishlist-sidebar">
-                <label className="search-wrap" htmlFor="wishlist-search">
-                  <span className="material-symbols-outlined search-field-icon" aria-hidden>
-                    search
-                  </span>
-                  <input
-                    id="wishlist-search"
-                    type="search"
-                    placeholder="Поиск вишлиста по названию"
-                    value={searchText}
-                    onChange={(event) => setSearchText(event.target.value)}
-                  />
-                </label>
-
-                <div className="wishlist-list">
-                  {isWishlistsLoading ? (
-                    <div className="empty-note">Загрузка...</div>
-                  ) : visibleWishlists.length === 0 ? (
-                    <div className="empty-note">Списки не найдены</div>
-                  ) : (
-                    visibleWishlists.map((wishlist) => (
-                      <button
-                        type="button"
-                        key={wishlist.id}
-                        className={`wishlist-chip${selectedWishlist?.id === wishlist.id ? ' is-selected' : ''}`}
-                        onClick={() => {
-                          setSelectedWishlistId(wishlist.id);
-                          setIsMenuOpen(false);
-                        }}
-                      >
-                        <img
-                          src={wishlist.icon}
-                          alt=""
-                          className="chip-icon wishlist-icon-png"
-                          width={28}
-                          height={28}
-                        />
-                        <span className="chip-meta">
-                          <strong>{wishlist.title}</strong>
-                          <small>{wishlist.wishes.length} пожеланий</small>
-                        </span>
-                      </button>
-                    ))
-                  )}
-                </div>
-              </aside>
-
-              <section className="wishlist-content">
-                {selectedWishlist ? (
-                  <>
-                    <header className="wishlist-content-head">
-                      <div className="content-main-meta">
-                        <img
-                          src={selectedWishlist.icon}
-                          alt=""
-                          className="content-icon wishlist-icon-png"
-                          width={36}
-                          height={36}
-                        />
-                        <div>
-                          <h2>{selectedWishlist.title}</h2>
-                          <p>{selectedWishlist.description}</p>
-                          {selectedWishlist.eventDate && (
-                            <small className="event-date">Событие: {selectedWishlist.eventDate}</small>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="content-actions">
-                        <button type="button" className="action-btn">
-                          + Добавить желание
-                        </button>
-                        <div className="dots-menu-wrap" ref={wishlistDotsMenuRef}>
-                          <button
-                            type="button"
-                            className="dots-btn"
-                            aria-label="Настройки вишлиста"
-                            onClick={() => setIsMenuOpen((previousState) => !previousState)}
-                          >
-                            ...
-                          </button>
-                          {isMenuOpen && (
-                            <div className="dots-menu" role="menu">
-                              <button type="button" role="menuitem">
-                                Редактировать
-                              </button>
-                              <button type="button" role="menuitem">
-                                Удалить
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </header>
-
-                    <div className="wishes-list">
-                      {selectedWishlist.wishes.map((wish) => (
-                        <article className="wish-row" key={wish.id}>
-                          <h3>{wish.title}</h3>
-                          <p>{wish.note}</p>
-                        </article>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div className="empty-note empty-content">Выберите вишлист в левом списке</div>
-                )}
-                {wishlistsMessage && <div className="empty-note">{wishlistsMessage}</div>}
-              </section>
-            </div>
-          </section>
+          <WishlistsPage
+            searchText={searchText}
+            onSearchTextChange={setSearchText}
+            isWishlistsLoading={isWishlistsLoading}
+            visibleWishlists={visibleWishlists}
+            selectedWishlist={selectedWishlist}
+            onSelectWishlist={(id) => {
+              setSelectedWishlistId(id);
+              setIsMenuOpen(false);
+            }}
+            wishlistsMessage={wishlistsMessage}
+            currentUser={currentUser}
+            onOpenLogin={openLoginModal}
+            isMenuOpen={isMenuOpen}
+            onToggleWishlistMenu={() => setIsMenuOpen((previousState) => !previousState)}
+            wishlistDotsMenuRef={wishlistDotsMenuRef}
+          />
         )}
 
         {showCreateWishlistPage && (
-          <section className="profile-page create-wishlist-page">
-            <div className="profile-card create-wishlist-inner">
-              <div className="create-wishlist-head">
-                <a href="/wishlists" className="create-wishlist-back">
-                  ← К спискам
-                </a>
-                <h1 className="wishlists-title">Новый вишлист</h1>
-                <p className="wishlists-subtitle">Заполните поля и сохраните список</p>
-              </div>
-
-              {!currentUser ? (
-                <div className="profile-card create-wishlist-guest">
-                  <p>Чтобы создать вишлист, войдите в аккаунт.</p>
-                  <button type="button" className="action-btn primary-btn" onClick={openLoginModal}>
-                    Войти
-                  </button>
-                </div>
-              ) : (
-                <form className="wishlist-create-form profile-edit-form" onSubmit={submitCreateWishlist}>
-                  <label>
-                    <span className="form-label-row">
-                      Название <span className="field-required">*</span>
-                    </span>
-                    <input
-                      required
-                      maxLength={200}
-                      value={createWishlistForm.title}
-                      onChange={(event) =>
-                        setCreateWishlistForm({ ...createWishlistForm, title: event.target.value })
-                      }
-                      placeholder="Например: День рождения 2026"
-                    />
-                  </label>
-
-                  <label>
-                    Описание
-                    <textarea
-                      rows={5}
-                      value={createWishlistForm.description}
-                      onChange={(event) =>
-                        setCreateWishlistForm({ ...createWishlistForm, description: event.target.value })
-                      }
-                      placeholder="Опишите, почему этот список важен для вас. Мечты любят подробности"
-                    />
-                  </label>
-
-                  <label>
-                    Дата события
-                    <input
-                      type="date"
-                      value={createWishlistForm.eventDate}
-                      onChange={(event) =>
-                        setCreateWishlistForm({ ...createWishlistForm, eventDate: event.target.value })
-                      }
-                    />
-                  </label>
-
-                  <div className="wishlist-icon-field">
-                    <span className="wishlist-icon-field-label">Иконка списка</span>
-                    <details ref={wishlistIconPickerRef} className="wishlist-icon-details">
-                      <summary className="wishlist-icon-summary">
-                        <img
-                          src={getWishlistIconUrl(createWishlistForm.icon)}
-                          alt=""
-                          className="wishlist-icon-png wishlist-icon-summary-img"
-                          width={32}
-                          height={32}
-                        />
-                        <span className="wishlist-icon-summary-text">
-                          {wishlistIconOptions.find((o) => o.code === createWishlistForm.icon)?.label ||
-                            'Обычный'}
-                        </span>
-                        <span className="wishlist-icon-chevron" aria-hidden>
-                          ▾
-                        </span>
-                      </summary>
-                      <div className="wishlist-icon-grid" role="listbox" aria-label="Выбор иконки">
-                        {wishlistIconOptions.map(({ code, label }) => (
-                          <button
-                            key={code}
-                            type="button"
-                            className={`wishlist-icon-option${createWishlistForm.icon === code ? ' is-selected' : ''}`}
-                            onClick={() => selectWishlistIcon(code)}
-                            title={label}
-                          >
-                            <img src={getWishlistIconUrl(code)} alt="" width={40} height={40} />
-                            <span>{label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </details>
-                  </div>
-
-                  <button
-                    type="button"
-                    className="privacy-settings-strip"
-                    onClick={() => setIsPrivacyModalOpen(true)}
-                  >
-                    <span className="privacy-settings-strip-title">Настройки приватности</span>
-                    <span className="privacy-settings-strip-hint">
-                      Укажите, кто может просматривать ваш список
-                    </span>
-                  </button>
-
-                  <div className="profile-form-actions">
-                    <button
-                      type="submit"
-                      className="action-btn primary-btn"
-                      disabled={isCreateWishlistSubmitting}
-                    >
-                      {isCreateWishlistSubmitting ? 'Сохранение…' : 'Создать вишлист'}
-                    </button>
-                    <a href="/wishlists" className="action-btn">
-                      Отмена
-                    </a>
-                  </div>
-
-                  {createWishlistMessage && (
-                    <p className="wishlist-create-message" role="alert">
-                      {createWishlistMessage}
-                    </p>
-                  )}
-                </form>
-              )}
-            </div>
-          </section>
+          <CreateWishlistPage
+            currentUser={currentUser}
+            onOpenLogin={openLoginModal}
+            createWishlistForm={createWishlistForm}
+            onCreateWishlistFormChange={setCreateWishlistForm}
+            onSubmitCreateWishlist={submitCreateWishlist}
+            createWishlistMessage={createWishlistMessage}
+            isCreateWishlistSubmitting={isCreateWishlistSubmitting}
+            wishlistIconPickerRef={wishlistIconPickerRef}
+            onSelectWishlistIcon={selectWishlistIcon}
+            onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
+          />
         )}
 
         {showProfilePage && (
-          <section className="profile-page">
-            {!currentUser ? (
-              <div className="profile-card">
-                <h1>Профиль</h1>
-                <p>Чтобы открыть профиль, сначала выполните вход.</p>
-                <button type="button" className="action-btn primary-btn" onClick={openLoginModal}>
-                  Войти
-                </button>
-              </div>
-            ) : (
-              <div className="profile-card">
-                <>
-                  <div className="profile-card-header">
-                    <h1 className="profile-page-title">Профиль</h1>
-                    <div className="dots-menu-wrap" ref={profileDotsMenuRef}>
-                      <button
-                        type="button"
-                        className="dots-btn"
-                        aria-label="Меню профиля"
-                        aria-expanded={isProfileMenuOpen}
-                        onClick={() => setIsProfileMenuOpen((previous) => !previous)}
-                      >
-                        ...
-                      </button>
-                      {isProfileMenuOpen && (
-                        <div className="dots-menu" role="menu">
-                          <button
-                            type="button"
-                            role="menuitem"
-                            onClick={() => {
-                              setIsProfileEditMode(true);
-                              setIsProfileMenuOpen(false);
-                            }}
-                          >
-                            Редактировать
-                          </button>
-                          <button type="button" role="menuitem" disabled>
-                            Настройки
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {isProfileLoading && <p className="profile-message">Загрузка...</p>}
-                  {!isProfileLoading && profileData && (
-                    <>
-                      <div className="profile-top-row">
-                        <div className="profile-avatar-wrap">
-                          {profileForm.photoDataUrl || profileData.photo_url ? (
-                            <img
-                              src={profileForm.photoDataUrl || `http://localhost:5000${profileData.photo_url}`}
-                              alt="Фото профиля"
-                              className="profile-avatar"
-                            />
-                          ) : (
-                            <svg viewBox="0 0 24 24" className="profile-avatar-svg" aria-hidden>
-                              <circle cx="12" cy="8" r="3.5" fill="currentColor" />
-                              <path d="M5 19.5c0-3.5 3.5-5.5 7-5.5s7 2 7 5.5" fill="currentColor" />
-                            </svg>
-                          )}
-                        </div>
-
-                        <div className="profile-main-info">
-                          <h1>{profileData.name}</h1>
-                          <div className="profile-id-row">
-                            <span className="profile-id-label">ID</span>
-                            <button
-                              type="button"
-                              className="profile-id-value profile-id-clickable"
-                              title="Нажмите, чтобы скопировать"
-                              onClick={() => copyProfileIdUser(profileData.id_user)}
-                            >
-                              {profileData.id_user}
-                            </button>
-                            {showIdCopiedHint && (
-                              <span className="profile-id-copied-hint" role="status">
-                                ID скопирован
-                              </span>
-                            )}
-                          </div>
-                          {profileData.birthday && (
-                            <p className="profile-birthday-line">
-                              Дата рождения: {formatBirthdayForDisplay(profileData.birthday)}
-                            </p>
-                          )}
-                          {profileData.description_user && (
-                            <p>Описание: {profileData.description_user}</p>
-                          )}
-                        </div>
-                      </div>
-
-                      {isProfileEditMode ? (
-                        <form className="profile-edit-form" onSubmit={saveProfile}>
-                          <label>
-                            Имя
-                            <input
-                              required
-                              value={profileForm.name}
-                              onChange={(event) =>
-                                setProfileForm({ ...profileForm, name: event.target.value })
-                              }
-                            />
-                          </label>
-                          <label>
-                            Дата рождения
-                            <input
-                              type="date"
-                              value={profileForm.birthday}
-                              onChange={(event) =>
-                                setProfileForm({ ...profileForm, birthday: event.target.value })
-                              }
-                            />
-                          </label>
-                          <label>
-                            Описание
-                            <textarea
-                              rows={4}
-                              value={profileForm.descriptionUser}
-                              onChange={(event) =>
-                                setProfileForm({ ...profileForm, descriptionUser: event.target.value })
-                              }
-                            />
-                          </label>
-                          <label>
-                            Фото профиля
-                            <input
-                              type="file"
-                              accept="image/png,image/jpeg,image/webp"
-                              onChange={handleProfilePhotoChange}
-                            />
-                          </label>
-                          <div className="profile-form-actions">
-                            <button type="submit" className="action-btn primary-btn">
-                              Сохранить
-                            </button>
-                            <button
-                              type="button"
-                              className="action-btn"
-                              onClick={() => setIsProfileEditMode(false)}
-                            >
-                              Отмена
-                            </button>
-                          </div>
-                        </form>
-                      ) : (
-                        <div className="profile-logout-row">
-                          <button type="button" className="action-btn" onClick={logoutUser}>
-                            Выйти
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </>
-                {profileMessage && <p className="profile-message">{profileMessage}</p>}
-              </div>
-            )}
-          </section>
+          <ProfilePage
+            currentUser={currentUser}
+            onOpenLogin={openLoginModal}
+            profileData={profileData}
+            isProfileLoading={isProfileLoading}
+            profileMessage={profileMessage}
+            profileForm={profileForm}
+            onProfileFormChange={setProfileForm}
+            isProfileEditMode={isProfileEditMode}
+            onSetProfileEditMode={setIsProfileEditMode}
+            onBeginProfileEdit={() => {
+              setIsProfileEditMode(true);
+              setIsProfileMenuOpen(false);
+            }}
+            isProfileMenuOpen={isProfileMenuOpen}
+            onToggleProfileMenu={() => setIsProfileMenuOpen((previous) => !previous)}
+            profileDotsMenuRef={profileDotsMenuRef}
+            showIdCopiedHint={showIdCopiedHint}
+            onSaveProfile={saveProfile}
+            onProfilePhotoChange={handleProfilePhotoChange}
+            onCopyProfileId={copyProfileIdUser}
+            onLogout={logoutUser}
+          />
         )}
       </main>
 
-      <footer className="site-footer glass-bar">
-        <div className="footer-inner">WISHLY</div>
-      </footer>
+      <SiteFooter />
 
       {isAuthModalOpen && (
-        <div className="auth-modal-backdrop" onClick={closeAuthModal}>
-          <section className="auth-modal" onClick={(event) => event.stopPropagation()}>
-            <div className="auth-header-row">
-              <h2 className="auth-title">{authMode === 'login' ? 'Вход' : 'Регистрация'}</h2>
-              <button type="button" className="auth-close-button" onClick={closeAuthModal}>
-                x
-              </button>
-            </div>
-            {authMode === 'login' ? (
-              <p className="auth-switch-text">
-                Нет аккаунта?{' '}
-                <button type="button" className="auth-switch-link" onClick={() => setAuthMode('register')}>
-                  Зарегистрироваться
-                </button>
-              </p>
-            ) : (
-              <p className="auth-switch-text">
-                Уже есть аккаунт?{' '}
-                <button type="button" className="auth-switch-link" onClick={() => setAuthMode('login')}>
-                  Войти
-                </button>
-              </p>
-            )}
-
-            {authMode === 'login' ? (
-              <form className="auth-form" onSubmit={sendLogin}>
-                <label>
-                  Имя
-                  <input
-                    required
-                    value={loginForm.name}
-                    onChange={(event) =>
-                      setLoginForm({ ...loginForm, name: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  Email
-                  <input
-                    type="email"
-                    required
-                    value={loginForm.email}
-                    onChange={(event) =>
-                      setLoginForm({ ...loginForm, email: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  Пароль
-                  <input
-                    type="password"
-                    required
-                    value={loginForm.password}
-                    onChange={(event) =>
-                      setLoginForm({ ...loginForm, password: event.target.value })
-                    }
-                  />
-                </label>
-                <button type="submit" className="action-btn primary-btn" disabled={isAuthLoading}>
-                  {isAuthLoading ? 'Загрузка...' : 'Войти'}
-                </button>
-              </form>
-            ) : (
-              <form className="auth-form" onSubmit={sendRegister}>
-                <label>
-                  Имя
-                  <input
-                    required
-                    value={registerForm.name}
-                    onChange={(event) =>
-                      setRegisterForm({ ...registerForm, name: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  Email
-                  <input
-                    type="email"
-                    required
-                    value={registerForm.email}
-                    onChange={(event) =>
-                      setRegisterForm({ ...registerForm, email: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  День рождения
-                  <input
-                    type="date"
-                    value={registerForm.birthday}
-                    onChange={(event) =>
-                      setRegisterForm({ ...registerForm, birthday: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  Пароль
-                  <input
-                    type="password"
-                    required
-                    value={registerForm.password}
-                    onChange={(event) =>
-                      setRegisterForm({ ...registerForm, password: event.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  Повтор пароля
-                  <input
-                    type="password"
-                    required
-                    value={registerForm.passwordRepeat}
-                    onChange={(event) =>
-                      setRegisterForm({ ...registerForm, passwordRepeat: event.target.value })
-                    }
-                  />
-                </label>
-                <button type="submit" className="action-btn primary-btn" disabled={isAuthLoading}>
-                  {isAuthLoading ? 'Загрузка...' : 'Зарегистрироваться'}
-                </button>
-              </form>
-            )}
-
-            {authMessage && <p className="auth-message">{authMessage}</p>}
-          </section>
-        </div>
+        <AuthModal
+          authMode={authMode}
+          onClose={closeAuthModal}
+          onSetAuthMode={setAuthMode}
+          loginForm={loginForm}
+          onLoginFormChange={setLoginForm}
+          registerForm={registerForm}
+          onRegisterFormChange={setRegisterForm}
+          onSubmitLogin={sendLogin}
+          onSubmitRegister={sendRegister}
+          authMessage={authMessage}
+          isAuthLoading={isAuthLoading}
+        />
       )}
 
-      {isPrivacyModalOpen && (
-        <div className="auth-modal-backdrop" onClick={() => setIsPrivacyModalOpen(false)}>
-          <section className="auth-modal privacy-modal" onClick={(event) => event.stopPropagation()}>
-            <div className="auth-header-row">
-              <h2 className="auth-title">Настройки приватности</h2>
-              <button
-                type="button"
-                className="auth-close-button"
-                onClick={() => setIsPrivacyModalOpen(false)}
-              >
-                x
-              </button>
-            </div>
-          </section>
-        </div>
-      )}
+      {isPrivacyModalOpen && <PrivacyModal onClose={() => setIsPrivacyModalOpen(false)} />}
     </div>
   );
 }

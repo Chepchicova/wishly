@@ -1,0 +1,122 @@
+/* Кнопки, типографика заголовков вишлистов, меню «⋯», пустые состояния — используются на нескольких экранах */
+
+.wishlists-title {
+  margin: 0;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.wishlists-subtitle {
+  margin: 0.35rem 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.95rem;
+}
+
+.action-btn {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f4f4f5;
+  border-radius: 10px;
+  padding: 0.48rem 0.68rem;
+  font-size: 0.83rem;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: rgba(99, 102, 241, 0.22);
+  border-color: rgba(129, 140, 248, 0.42);
+}
+
+.wishlists-head .action-btn.primary-btn,
+.create-wishlist-inner .action-btn,
+.create-wishlist-guest .action-btn {
+  padding: 0.56rem 0.88rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.wishlist-icon-png {
+  display: block;
+  object-fit: contain;
+}
+
+.dots-menu-wrap {
+  position: relative;
+}
+
+.dots-btn {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f4f4f5;
+  border-radius: 10px;
+  width: 2.2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.dots-menu {
+  position: absolute;
+  right: 0;
+  top: 2.3rem;
+  min-width: 9.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: #121212;
+  padding: 0.35rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.dots-menu button {
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.5rem;
+  background: transparent;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.dots-menu button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dots-menu button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.dots-menu button:disabled:hover {
+  background: transparent;
+}
+
+.empty-note {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.2rem;
+}
+
+.empty-content {
+  margin: auto;
+}
+
+a.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.wishlists-new-link {
+  box-sizing: border-box;
+}

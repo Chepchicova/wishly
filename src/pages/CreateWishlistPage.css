@@ -1,0 +1,179 @@
+.create-wishlist-page {
+  padding-bottom: 0.5rem;
+  width: 100%;
+}
+
+.create-wishlist-inner {
+  padding: clamp(1.15rem, 2.5vw, 1.5rem) clamp(1.1rem, 3vw, 1.75rem) clamp(1.35rem, 3vw, 1.85rem);
+}
+
+.create-wishlist-head {
+  margin-bottom: 1rem;
+}
+
+.create-wishlist-back {
+  display: inline-block;
+  margin-bottom: 0.55rem;
+  font-size: 0.88rem;
+  color: #a5b4fc;
+  text-decoration: none;
+}
+
+.create-wishlist-back:hover {
+  text-decoration: underline;
+}
+
+.create-wishlist-guest {
+  margin-top: 0.5rem;
+}
+
+.wishlist-create-form {
+  margin-top: 0.35rem;
+}
+
+/* Единая типографика подписей полей (как у «Дата события», «Описание» и т.д.) */
+.wishlist-create-form .form-label-row,
+.wishlist-create-form.profile-edit-form label,
+.wishlist-create-form .wishlist-icon-field-label {
+  font-size: 0.98rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.wishlist-create-form .form-label-row {
+  display: block;
+}
+
+.wishlist-create-form.profile-edit-form input,
+.wishlist-create-form.profile-edit-form textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.45;
+  padding: 0.65rem 0.78rem;
+}
+
+.wishlist-create-form.profile-edit-form textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+.field-required {
+  color: #f87171;
+  font-weight: 600;
+}
+
+.wishlist-icon-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.wishlist-icon-details {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.wishlist-icon-details[open] {
+  border-color: rgba(129, 140, 248, 0.45);
+}
+
+.wishlist-icon-summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  user-select: none;
+}
+
+.wishlist-icon-summary::-webkit-details-marker {
+  display: none;
+}
+
+.wishlist-icon-summary-text {
+  flex: 1;
+  font-size: 0.92rem;
+  color: #e5e7eb;
+}
+
+.wishlist-icon-chevron {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.wishlist-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: 0.45rem;
+  padding: 0.55rem 0.65rem 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.wishlist-icon-option {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #e5e7eb;
+  padding: 0.45rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  font-size: 0.72rem;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.wishlist-icon-option:hover {
+  border-color: rgba(129, 140, 248, 0.45);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.wishlist-icon-option.is-selected {
+  border-color: rgba(129, 140, 248, 0.65);
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.wishlist-icon-option span {
+  word-break: break-word;
+}
+
+.privacy-settings-strip {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.2rem;
+  color: inherit;
+}
+
+.privacy-settings-strip:hover {
+  border-color: rgba(129, 140, 248, 0.35);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.privacy-settings-strip-title {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+.privacy-settings-strip-hint {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.wishlist-create-message {
+  margin: 0;
+  color: #fca5a5;
+  font-size: 0.9rem;
+}

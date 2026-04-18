@@ -1,0 +1,156 @@
+.profile-page {
+  max-width: 840px;
+  margin: 0 auto;
+}
+
+/* Как у .wishlists-panel + .glass-bar: та же рамка, фон и матовое стекло задаётся классом glass-bar в разметке */
+.profile-card {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1rem;
+}
+
+/* Вложенная карточка (напр. гость на «Новый вишлист») — без второго слоя «стекла» */
+.profile-card .profile-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.profile-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.profile-page-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.profile-top-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.profile-avatar-wrap {
+  width: 108px;
+  height: 108px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-avatar-svg {
+  width: 72px;
+  height: 72px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.profile-main-info h1 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.profile-main-info p {
+  margin: 0.3rem 0 0;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.profile-id-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.6rem;
+  margin-top: 0.45rem;
+}
+
+.profile-id-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.profile-id-value {
+  font-size: 0.78rem;
+  font-family: ui-monospace, monospace;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-id-clickable {
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 4px;
+}
+
+.profile-id-clickable:hover {
+  color: #e5e7eb;
+  text-decoration: underline;
+}
+
+.profile-id-copied-hint {
+  font-size: 0.72rem;
+  color: #86efac;
+  white-space: nowrap;
+}
+
+.profile-birthday-line {
+  margin-top: 0.45rem !important;
+}
+
+.profile-logout-row {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.profile-form-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.profile-edit-form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.profile-edit-form label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.profile-edit-form input,
+.profile-edit-form textarea {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f4f4f5;
+  padding: 0.55rem 0.65rem;
+}
+
+.profile-message {
+  margin-top: 0.75rem;
+  color: #c4b5fd;
+}
