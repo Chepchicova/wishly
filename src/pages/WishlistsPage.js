@@ -1,3 +1,4 @@
+import { formatGiftPrice, resolveGiftImageUrl } from '../utils/giftDisplay';
 import './WishlistsPage.css';
 
 export default function WishlistsPage({
@@ -13,21 +14,23 @@ export default function WishlistsPage({
   isMenuOpen,
   onToggleWishlistMenu,
   wishlistDotsMenuRef,
+  onRequestDeleteWishlist,
+  onCloseWishlistMenu,
 }) {
   return (
     <section className="wishlists-page">
       <div className="wishlists-head">
         <div>
-          <h1 className="wishlists-title">Мои вишлисты</h1>
+          <h1 className="wishlists-title">Мои списки желаний</h1>
           <p className="wishlists-subtitle">Создавайте и организуйте свои списки желаний</p>
         </div>
         {currentUser ? (
           <a href="/wishlists/new" className="action-btn primary-btn wishlists-new-link">
-            + Новый вишлист
+            + Новый список желаний
           </a>
         ) : (
           <button type="button" className="action-btn primary-btn" onClick={onOpenLogin}>
-            + Новый вишлист
+            + Новый список желаний
           </button>
         )}
       </div>
@@ -41,7 +44,7 @@ export default function WishlistsPage({
             <input
               id="wishlist-search"
               type="search"
-              placeholder="Поиск вишлиста по названию"
+              placeholder="Поиск списка желаний по названию"
               value={searchText}
               onChange={(event) => onSearchTextChange(event.target.value)}
             />
@@ -101,24 +104,50 @@ export default function WishlistsPage({
                 </div>
 
                 <div className="content-actions">
-                  <button type="button" className="action-btn">
-                    + Добавить желание
-                  </button>
+                  {currentUser ? (
+                    <a
+                      href={`/wishlists/gifts/new?list=${selectedWishlist.id}`}
+                      className="action-btn action-btn--inline-icon"
+                    >
+                      <span className="action-btn__icon" aria-hidden>
+                        +
+                      </span>
+                      <span>Добавить подарок</span>
+                    </a>
+                  ) : (
+                    <button type="button" className="action-btn action-btn--inline-icon" onClick={onOpenLogin}>
+                      <span className="action-btn__icon" aria-hidden>
+                        +
+                      </span>
+                      <span>Добавить подарок</span>
+                    </button>
+                  )}
                   <div className="dots-menu-wrap" ref={wishlistDotsMenuRef}>
                     <button
                       type="button"
                       className="dots-btn"
-                      aria-label="Настройки вишлиста"
+                      aria-label="Настройки списка желаний"
                       onClick={onToggleWishlistMenu}
                     >
                       ...
                     </button>
                     {isMenuOpen && (
                       <div className="dots-menu" role="menu">
-                        <button type="button" role="menuitem">
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            onCloseWishlistMenu();
+                            window.location.assign(`/wishlists/${selectedWishlist.id}/edit`);
+                          }}
+                        >
                           Редактировать
                         </button>
-                        <button type="button" role="menuitem">
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => onRequestDeleteWishlist(selectedWishlist)}
+                        >
                           Удалить
                         </button>
                       </div>
@@ -127,17 +156,46 @@ export default function WishlistsPage({
                 </div>
               </header>
 
-              <div className="wishes-list">
-                {selectedWishlist.wishes.map((wish) => (
-                  <article className="wish-row" key={wish.id}>
-                    <h3>{wish.title}</h3>
-                    <p>{wish.note}</p>
-                  </article>
-                ))}
+              <div className="wishes-grid">
+                {selectedWishlist.wishes.length === 0 ? (
+                  <div className="wishes-grid__empty empty-note">В этом списке пока нет подарков</div>
+                ) : (
+                  selectedWishlist.wishes.map((wish) => {
+                    const priceLabel = formatGiftPrice(wish.price);
+                    const giftId = String(wish.giftId || wish.id || '').replace(/^gift_/, '');
+                    return (
+                      <a
+                        className="wish-card wish-card-link"
+                        href={`/wishlists/gifts/${giftId}?list=${selectedWishlist.id}`}
+                        key={wish.id}
+                      >
+                        <article className="wish-card__inner">
+                          <div className="wish-card__image-wrap">
+                            <img
+                              src={resolveGiftImageUrl(wish.imagePath)}
+                              alt=""
+                              className="wish-card__image"
+                              loading="lazy"
+                            />
+                          </div>
+                          <div className="wish-card__body">
+                            <h3 className="wish-card__title">{wish.title}</h3>
+                            {wish.note ? <p className="wish-card__desc">{wish.note}</p> : null}
+                            {priceLabel ? (
+                              <p className="wish-card__price">{priceLabel}</p>
+                            ) : (
+                              <span className="wish-card__price-spacer" aria-hidden />
+                            )}
+                          </div>
+                        </article>
+                      </a>
+                    );
+                  })
+                )}
               </div>
             </>
           ) : (
-            <div className="empty-note empty-content">Выберите вишлист в левом списке</div>
+            <div className="empty-note empty-content">Выберите список желаний слева</div>
           )}
           {wishlistsMessage && <div className="empty-note">{wishlistsMessage}</div>}
         </section>

@@ -17,9 +17,9 @@
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 120% 80% at 50% -30%, rgba(99, 102, 241, 0.22), transparent 55%),
-    radial-gradient(ellipse 90% 60% at 100% 0%, rgba(139, 92, 246, 0.12), transparent 45%),
-    radial-gradient(ellipse 70% 50% at 0% 100%, rgba(59, 130, 246, 0.08), transparent 50%),
+    radial-gradient(ellipse 120% 80% at 50% -30%, rgba(99, 102, 241, 0.3), transparent 55%),
+    radial-gradient(ellipse 90% 60% at 100% 0%, rgba(139, 92, 246, 0.17), transparent 45%),
+    radial-gradient(ellipse 70% 50% at 0% 100%, rgba(59, 130, 246, 0.12), transparent 50%),
     #0a0a0a;
 }
 
@@ -29,10 +29,10 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.58;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.078) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.078) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 85% 75% at 50% 40%, black 20%, transparent 70%);
   -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 40%, black 20%, transparent 70%);
@@ -53,4 +53,10 @@
   min-height: 24rem;
   background: transparent;
   padding: clamp(1.25rem, 2.5vw, 2.25rem);
+}
+
+/* Одинаковый зазор: от хедера сайта до «Назад к спискам» и от ссылки до карточки */
+.site-main:has(.gift-details-page) {
+  --gift-details-nav-block-gap: clamp(1.25rem, 2.5vw, 2.25rem);
+  padding-top: var(--gift-details-nav-block-gap);
 }

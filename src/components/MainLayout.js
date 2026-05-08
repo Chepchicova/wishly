@@ -1,281 +1,78 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './AppShell.css';
+import './AppThemeLight.css';
 import './SharedUi.css';
 
 import AuthModal from './AuthModal';
+import DeleteWishlistConfirmModal from './DeleteWishlistConfirmModal';
 import PrivacyModal from './PrivacyModal';
 import SiteFooter from './SiteFooter';
 import SiteHeader from './SiteHeader';
+import CreateGiftPage from '../pages/CreateGiftPage';
+import GiftDetailsPage from '../pages/GiftDetailsPage';
 import CreateWishlistPage from '../pages/CreateWishlistPage';
 import ProfilePage from '../pages/ProfilePage';
 import WishlistsPage from '../pages/WishlistsPage';
-import { getWishlistIconUrl } from '../constants/wishlistIcons';
-import { formatEventDateForDisplay } from '../utils/dateFormat';
+import { parseAppRoutes } from '../navigation/parseAppRoutes';
+import { useAppTheme } from '../hooks/useAppTheme';
+import { useAuthSession } from '../hooks/useAuthSession';
+import { useGiftWishlistForms } from '../hooks/useGiftWishlistForms';
+import { useProfileState } from '../hooks/useProfileState';
+import { useWishlistsState } from '../hooks/useWishlistsState';
+
+/**
+ * Компоновщик экрана: маршруты + хуки по доменам + разметка.
+ * Паттерн: «тонкий layout», логика в hooks/ и navigation/.
+ */
+function findWishlistIdContainingGift(wishlistsData, giftIdStr) {
+  const gid = String(giftIdStr);
+  for (const w of wishlistsData) {
+    if (!Array.isArray(w.wishes)) {
+      continue;
+    }
+    if (w.wishes.some((x) => String(x.giftId) === gid)) {
+      return w.id;
+    }
+  }
+  return null;
+}
 
 export default function MainLayout() {
-  const savedUser = localStorage.getItem('auth_user');
-  const initialUser = savedUser ? JSON.parse(savedUser) : null;
+  const routes = parseAppRoutes(window.location.pathname, window.location.search);
 
-  const browserPathname = window.location.pathname;
-  const currentPathname =
-    browserPathname === '/profile/settings' ? '/profile' : browserPathname;
-  const showWishlistsPage = currentPathname === '/' || currentPathname.startsWith('/wishlists');
-  const showCreateWishlistPage = currentPathname === '/wishlists/new';
-  const showWishlistsMainView = showWishlistsPage && !showCreateWishlistPage;
-  const showProfilePage = currentPathname === '/profile';
-  const [searchText, setSearchText] = useState('');
-  const [wishlistsData, setWishlistsData] = useState([]);
-  const [isWishlistsLoading, setIsWishlistsLoading] = useState(false);
-  const [wishlistsMessage, setWishlistsMessage] = useState('');
-  const [selectedWishlistId, setSelectedWishlistId] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(initialUser);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('login');
-  const [authMessage, setAuthMessage] = useState('');
-  const [isAuthLoading, setIsAuthLoading] = useState(false);
-  const [profileData, setProfileData] = useState(null);
-  const [isProfileLoading, setIsProfileLoading] = useState(false);
-  const [isProfileEditMode, setIsProfileEditMode] = useState(false);
-  const [profileMessage, setProfileMessage] = useState('');
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [showIdCopiedHint, setShowIdCopiedHint] = useState(false);
-  const wishlistDotsMenuRef = useRef(null);
-  const profileDotsMenuRef = useRef(null);
-  const wishlistIconPickerRef = useRef(null);
-  const [profileForm, setProfileForm] = useState({
-    name: '',
-    birthday: '',
-    descriptionUser: '',
-    photoDataUrl: '',
+  const auth = useAuthSession();
+  const { isDarkTheme, setIsDarkTheme } = useAppTheme();
+
+  const wishlists = useWishlistsState(
+    auth.currentUser,
+    auth.clearAuthSession,
+    routes.showWishlistsPage
+  );
+
+  const profile = useProfileState({
+    currentUser: auth.currentUser,
+    saveUser: auth.saveUser,
+    clearAuthSession: auth.clearAuthSession,
+    showProfilePage: routes.showProfilePage,
   });
 
-  const [loginForm, setLoginForm] = useState({
-    name: '',
-    email: '',
-    password: '',
+  const forms = useGiftWishlistForms({
+    currentUser: auth.currentUser,
+    clearAuthSession: auth.clearAuthSession,
+    wishlistsData: wishlists.wishlistsData,
+    editingWishlistId: routes.editingWishlistId,
+    viewingGiftId: routes.viewingGiftId,
+    browserPathname: routes.browserPathname,
   });
 
-  const [registerForm, setRegisterForm] = useState({
-    name: '',
-    email: '',
-    birthday: '',
-    password: '',
-    passwordRepeat: '',
-  });
-
-  const [createWishlistForm, setCreateWishlistForm] = useState({
-    title: '',
-    description: '',
-    eventDate: '',
-    icon: 'basic',
-  });
-  const [createWishlistMessage, setCreateWishlistMessage] = useState('');
-  const [isCreateWishlistSubmitting, setIsCreateWishlistSubmitting] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
-  const normalizedSearchText = searchText.trim().toLowerCase();
-  const visibleWishlists = wishlistsData.filter((wishlist) => {
-    if (normalizedSearchText === '') {
-      return true;
-    }
-    return wishlist.title.toLowerCase().includes(normalizedSearchText);
-  });
-
-  const selectedWishlist =
-    visibleWishlists.find((wishlist) => wishlist.id === selectedWishlistId) ||
-    visibleWishlists[0] ||
-    null;
-
-  useEffect(() => {
-    if (!selectedWishlistId && visibleWishlists.length > 0) {
-      setSelectedWishlistId(visibleWishlists[0].id);
-      return;
-    }
-    const selectedStillExists = visibleWishlists.some((wishlist) => wishlist.id === selectedWishlistId);
-    if (!selectedStillExists && visibleWishlists.length > 0) {
-      setSelectedWishlistId(visibleWishlists[0].id);
-    }
-  }, [visibleWishlists, selectedWishlistId]);
-
-  function saveUser(user) {
-    localStorage.setItem('auth_user', JSON.stringify(user));
-    setCurrentUser(user);
-  }
-
-  function clearAuthSession() {
-    localStorage.removeItem('auth_user');
-    setCurrentUser(null);
-    setProfileData(null);
-    setProfileMessage('');
-    setIsProfileEditMode(false);
-    setIsProfileMenuOpen(false);
-  }
-
-  function closeAuthModal() {
-    setIsAuthModalOpen(false);
-    setAuthMessage('');
-  }
-
-  function openLoginModal() {
-    setAuthMode('login');
-    setIsAuthModalOpen(true);
-    setAuthMessage('');
-  }
-
-  async function loadProfile() {
-    if (!currentUser || !currentUser.id_user) {
-      return;
-    }
-
-    setIsProfileLoading(true);
-    setProfileMessage('');
-
-    try {
-      const response = await fetch(`http://localhost:5000/api/profile/${currentUser.id_user}`);
-      const data = await response.json();
-
-      if (response.status === 404) {
-        clearAuthSession();
-        setProfileMessage('Пользователь не найден в базе. Войдите снова.');
-        return;
-      }
-
-      if (!response.ok || !data.success) {
-        setProfileMessage(data.error || 'Не удалось загрузить профиль');
-        return;
-      }
-
-      setProfileData(data.profile);
-      setProfileForm({
-        name: data.profile.name || '',
-        birthday: data.profile.birthday ? String(data.profile.birthday).slice(0, 10) : '',
-        descriptionUser: data.profile.description_user || '',
-        photoDataUrl: '',
-      });
-    } catch (error) {
-      console.error('PROFILE LOAD ERROR', error);
-      setProfileMessage('Сервер недоступен');
-    } finally {
-      setIsProfileLoading(false);
-    }
-  }
-
-  async function loadWishlists() {
-    if (!currentUser || !currentUser.id_user) {
-      setWishlistsData([]);
-      setWishlistsMessage('Войдите, чтобы видеть свои вишлисты');
-      return;
-    }
-
-    setIsWishlistsLoading(true);
-    setWishlistsMessage('');
-
-    try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${currentUser.id_user}`);
-      const data = await response.json();
-
-      if (response.status === 404) {
-        clearAuthSession();
-        setWishlistsData([]);
-        setWishlistsMessage('Пользователь не найден в базе. Войдите снова.');
-        return;
-      }
-
-      if (!response.ok || !data.success) {
-        setWishlistsData([]);
-        setWishlistsMessage(data.error || 'Не удалось загрузить вишлисты');
-        return;
-      }
-
-      const mappedWishlists = (data.wishlists || []).map((wishlist) => ({
-        ...wishlist,
-        icon: getWishlistIconUrl(wishlist.icon),
-        eventDate: formatEventDateForDisplay(wishlist.eventDate),
-        wishes: Array.isArray(wishlist.wishes) ? wishlist.wishes : [],
-      }));
-
-      setWishlistsData(mappedWishlists);
-      setWishlistsMessage('');
-    } catch (error) {
-      console.error('WISHLISTS LOAD ERROR', error);
-      setWishlistsData([]);
-      setWishlistsMessage('Сервер недоступен');
-    } finally {
-      setIsWishlistsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    if (showWishlistsMainView) {
-      loadWishlists();
-    }
-  }, [showWishlistsMainView, currentUser?.id_user]);
-
-  async function submitCreateWishlist(event) {
-    event.preventDefault();
-    if (!currentUser || !currentUser.id_user) {
-      setCreateWishlistMessage('Войдите, чтобы создать вишлист');
-      return;
-    }
-
-    const title = createWishlistForm.title.trim();
-    if (!title) {
-      setCreateWishlistMessage('Укажите название');
-      return;
-    }
-
-    setIsCreateWishlistSubmitting(true);
-    setCreateWishlistMessage('');
-
-    const payload = {
-      title,
-      description: createWishlistForm.description.trim() || undefined,
-      dateEvent: createWishlistForm.eventDate || undefined,
-      icon: createWishlistForm.icon,
-      status: 'private',
-    };
-
-    try {
-      const response = await fetch(`http://localhost:5000/api/wishlists/${currentUser.id_user}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-
-      if (response.status === 404) {
-        clearAuthSession();
-        setCreateWishlistMessage('Пользователь не найден. Войдите снова.');
-        return;
-      }
-
-      if (!response.ok || !data.success) {
-        setCreateWishlistMessage(data.error || 'Не удалось создать вишлист');
-        return;
-      }
-
-      window.location.href = '/wishlists';
-    } catch (error) {
-      console.error('CREATE WISHLIST ERROR', error);
-      setCreateWishlistMessage('Сервер недоступен');
-    } finally {
-      setIsCreateWishlistSubmitting(false);
-    }
-  }
-
-  function selectWishlistIcon(code) {
-    setCreateWishlistForm((previous) => ({ ...previous, icon: code }));
-    if (wishlistIconPickerRef.current) {
-      wishlistIconPickerRef.current.open = false;
-    }
-  }
-
-  useEffect(() => {
-    if (showProfilePage) {
-      loadProfile();
-    }
-  }, [showProfilePage, currentUser?.id_user]);
+  const setProfileMenuOpen = profile.setIsProfileMenuOpen;
+  const wishlistMenuOpen = wishlists.isMenuOpen;
+  const setWishlistMenuOpen = wishlists.setIsMenuOpen;
+  const wishlistDotsMenuRef = wishlists.wishlistDotsMenuRef;
+  const profileMenuOpen = profile.isProfileMenuOpen;
+  const profileDotsMenuRef = profile.profileDotsMenuRef;
 
   useEffect(() => {
     if (window.location.pathname === '/profile/settings') {
@@ -284,329 +81,237 @@ export default function MainLayout() {
   }, []);
 
   useEffect(() => {
-    if (!showProfilePage) {
-      setIsProfileMenuOpen(false);
+    if (!routes.showProfilePage) {
+      setProfileMenuOpen(false);
     }
-  }, [showProfilePage]);
+  }, [routes.showProfilePage, setProfileMenuOpen]);
+
+  let giftDetailsResolvedListId = routes.giftDetailsContextListId;
+  if (!giftDetailsResolvedListId && forms.createGiftForm.selectedWishlistIds?.length) {
+    const hit = forms.createGiftForm.selectedWishlistIds
+      .map(String)
+      .find((id) => wishlists.wishlistsData.some((w) => w.id === id));
+    if (hit) {
+      giftDetailsResolvedListId = hit;
+    }
+  }
+  if (!giftDetailsResolvedListId && routes.viewingGiftId) {
+    giftDetailsResolvedListId = findWishlistIdContainingGift(
+      wishlists.wishlistsData,
+      routes.viewingGiftId
+    );
+  }
+
+  const giftDetailsContextWishlist = giftDetailsResolvedListId
+    ? wishlists.wishlistsData.find((w) => w.id === String(giftDetailsResolvedListId))
+    : null;
+
+  const giftDetailsSiblingGifts =
+    giftDetailsContextWishlist && Array.isArray(giftDetailsContextWishlist.wishes)
+      ? giftDetailsContextWishlist.wishes
+          .map((wish) => ({
+            giftId: String(wish.giftId),
+            title: wish.title || 'Без названия',
+            note: wish.note || '',
+            price: wish.price,
+            imagePath: wish.imagePath,
+          }))
+          .filter((row) => row.giftId !== String(routes.viewingGiftId))
+      : [];
+
+  const giftDetailsBackHref = giftDetailsResolvedListId
+    ? `/wishlists?list=${encodeURIComponent(String(giftDetailsResolvedListId))}`
+    : '/wishlists';
 
   useEffect(() => {
-    if (!isMenuOpen && !isProfileMenuOpen) {
+    if (!wishlistMenuOpen && !profileMenuOpen) {
       return undefined;
     }
 
     function handleDocumentMouseDown(event) {
-      if (isMenuOpen) {
+      if (wishlistMenuOpen) {
         const root = wishlistDotsMenuRef.current;
         if (!root || !root.contains(event.target)) {
-          setIsMenuOpen(false);
+          setWishlistMenuOpen(false);
         }
       }
-      if (isProfileMenuOpen) {
+      if (profileMenuOpen) {
         const root = profileDotsMenuRef.current;
         if (!root || !root.contains(event.target)) {
-          setIsProfileMenuOpen(false);
+          setProfileMenuOpen(false);
         }
       }
     }
 
     document.addEventListener('mousedown', handleDocumentMouseDown);
     return () => document.removeEventListener('mousedown', handleDocumentMouseDown);
-  }, [isMenuOpen, isProfileMenuOpen]);
-
-  useEffect(() => {
-    const savedJson = localStorage.getItem('auth_user');
-    if (!savedJson) {
-      return;
-    }
-
-    let parsedSavedUser;
-    try {
-      parsedSavedUser = JSON.parse(savedJson);
-    } catch {
-      localStorage.removeItem('auth_user');
-      setCurrentUser(null);
-      return;
-    }
-
-    if (!parsedSavedUser || !parsedSavedUser.id_user) {
-      return;
-    }
-
-    let cancelled = false;
-
-    async function validateSavedUserStillExists() {
-      try {
-        const response = await fetch(`http://localhost:5000/api/profile/${parsedSavedUser.id_user}`);
-        if (cancelled) {
-          return;
-        }
-        if (response.status === 404) {
-          clearAuthSession();
-        }
-      } catch {
-        /* сервер недоступен — сессию не трогаем */
-      }
-    }
-
-    validateSavedUserStillExists();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  async function handleProfilePhotoChange(event) {
-    const file = event.target.files && event.target.files[0];
-    if (!file) {
-      return;
-    }
-
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      setProfileForm((previousForm) => ({
-        ...previousForm,
-        photoDataUrl: String(fileReader.result || ''),
-      }));
-    };
-    fileReader.readAsDataURL(file);
-  }
-
-  async function saveProfile(event) {
-    event.preventDefault();
-
-    if (!currentUser || !currentUser.id_user) {
-      setProfileMessage('Вы не авторизованы');
-      return;
-    }
-
-    setIsProfileLoading(true);
-    setProfileMessage('');
-
-    try {
-      const response = await fetch(`http://localhost:5000/api/profile/${currentUser.id_user}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profileForm),
-      });
-      const data = await response.json();
-
-      if (response.status === 404) {
-        clearAuthSession();
-        setProfileMessage('Пользователь не найден в базе. Войдите снова.');
-        return;
-      }
-
-      if (!response.ok || !data.success) {
-        setProfileMessage(data.error || 'Не удалось сохранить профиль');
-        return;
-      }
-
-      setProfileData(data.profile);
-      saveUser({
-        ...currentUser,
-        name: data.profile.name,
-        birthday: data.profile.birthday,
-      });
-      setIsProfileEditMode(false);
-      setIsProfileMenuOpen(false);
-    } catch (error) {
-      console.error('PROFILE SAVE ERROR', error);
-      setProfileMessage('Сервер недоступен');
-    } finally {
-      setIsProfileLoading(false);
-    }
-  }
-
-  function logoutUser() {
-    clearAuthSession();
-    window.location.href = '/';
-  }
-
-  async function copyProfileIdUser(idUser) {
-    const text = String(idUser);
-    try {
-      await navigator.clipboard.writeText(text);
-      setProfileMessage('');
-      setShowIdCopiedHint(true);
-      window.setTimeout(() => setShowIdCopiedHint(false), 2200);
-    } catch {
-      setProfileMessage('Не удалось скопировать ID');
-    }
-  }
-
-  function isEmailFormatValid(email) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
-  }
-
-  async function sendLogin(event) {
-    event.preventDefault();
-    setIsAuthLoading(true);
-    setAuthMessage('');
-
-    try {
-      if (!isEmailFormatValid(loginForm.email)) {
-        setAuthMessage('Введите корректный email');
-        return;
-      }
-
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginForm),
-      });
-
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        setAuthMessage(data.error || 'Ошибка входа');
-        return;
-      }
-
-      saveUser(data.user);
-      closeAuthModal();
-      console.log('LOGIN SUCCESS', data.user);
-    } catch (error) {
-      console.error('LOGIN REQUEST ERROR', error);
-      setAuthMessage('Сервер недоступен');
-    } finally {
-      setIsAuthLoading(false);
-    }
-  }
-
-  async function sendRegister(event) {
-    event.preventDefault();
-    setIsAuthLoading(true);
-    setAuthMessage('');
-
-    try {
-      if (!isEmailFormatValid(registerForm.email)) {
-        setAuthMessage('Введите корректный email');
-        return;
-      }
-
-      if (registerForm.password.length < 6) {
-        setAuthMessage('Пароль должен содержать минимум 6 символов');
-        return;
-      }
-
-      if (registerForm.password !== registerForm.passwordRepeat) {
-        setAuthMessage('Пароль и повтор пароля должны совпадать');
-        return;
-      }
-
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerForm),
-      });
-
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        setAuthMessage(data.error || 'Ошибка регистрации');
-        return;
-      }
-
-      saveUser(data.user);
-      closeAuthModal();
-      console.log('REGISTER SUCCESS', data.user);
-    } catch (error) {
-      console.error('REGISTER REQUEST ERROR', error);
-      setAuthMessage('Сервер недоступен');
-    } finally {
-      setIsAuthLoading(false);
-    }
-  }
+  }, [
+    wishlistMenuOpen,
+    setWishlistMenuOpen,
+    wishlistDotsMenuRef,
+    profileMenuOpen,
+    setProfileMenuOpen,
+    profileDotsMenuRef,
+  ]);
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${isDarkTheme ? '' : ' app-shell--theme-light'}`}>
       <SiteHeader
-        currentPathname={currentPathname}
-        currentUser={currentUser}
-        onOpenLogin={openLoginModal}
+        currentPathname={routes.currentPathname}
+        currentUser={auth.currentUser}
+        onOpenLogin={auth.openLoginModal}
       />
 
       <main className="site-main">
-        {showWishlistsMainView && (
+        {routes.showWishlistsMainView && (
           <WishlistsPage
-            searchText={searchText}
-            onSearchTextChange={setSearchText}
-            isWishlistsLoading={isWishlistsLoading}
-            visibleWishlists={visibleWishlists}
-            selectedWishlist={selectedWishlist}
+            searchText={wishlists.searchText}
+            onSearchTextChange={wishlists.setSearchText}
+            isWishlistsLoading={wishlists.isWishlistsLoading}
+            visibleWishlists={wishlists.visibleWishlists}
+            selectedWishlist={wishlists.selectedWishlist}
             onSelectWishlist={(id) => {
-              setSelectedWishlistId(id);
-              setIsMenuOpen(false);
+              wishlists.setSelectedWishlistId(id);
+              wishlists.setIsMenuOpen(false);
             }}
-            wishlistsMessage={wishlistsMessage}
-            currentUser={currentUser}
-            onOpenLogin={openLoginModal}
-            isMenuOpen={isMenuOpen}
-            onToggleWishlistMenu={() => setIsMenuOpen((previousState) => !previousState)}
-            wishlistDotsMenuRef={wishlistDotsMenuRef}
+            wishlistsMessage={wishlists.wishlistsMessage}
+            currentUser={auth.currentUser}
+            onOpenLogin={auth.openLoginModal}
+            isMenuOpen={wishlists.isMenuOpen}
+            onToggleWishlistMenu={() => wishlists.setIsMenuOpen((previousState) => !previousState)}
+            wishlistDotsMenuRef={wishlists.wishlistDotsMenuRef}
+            onRequestDeleteWishlist={wishlists.requestDeleteWishlist}
+            onCloseWishlistMenu={() => wishlists.setIsMenuOpen(false)}
           />
         )}
 
-        {showCreateWishlistPage && (
+        {routes.showGiftFormPage && (
+          <CreateGiftPage
+            currentUser={auth.currentUser}
+            onOpenLogin={auth.openLoginModal}
+            createGiftForm={forms.createGiftForm}
+            onCreateGiftFormChange={forms.setCreateGiftForm}
+            onToggleGiftWishlist={forms.toggleGiftWishlist}
+            onSubmitCreateGift={forms.submitCreateGift}
+            createGiftMessage={forms.createGiftMessage}
+            isCreateGiftSubmitting={forms.isCreateGiftSubmitting}
+            userWishlists={wishlists.wishlistsData.map((w) => ({ id: w.id, title: w.title }))}
+            onGiftImageChange={forms.handleGiftImageChange}
+          />
+        )}
+
+        {routes.showGiftDetailsPage && (
+          <GiftDetailsPage
+            currentUser={auth.currentUser}
+            onOpenLogin={auth.openLoginModal}
+            createGiftForm={forms.createGiftForm}
+            onCreateGiftFormChange={forms.setCreateGiftForm}
+            onToggleGiftWishlist={forms.toggleGiftWishlist}
+            onGiftImageChange={forms.handleGiftImageChange}
+            onSubmitSaveGift={forms.submitUpdateGift}
+            onDeleteGift={forms.deleteGiftFromDetails}
+            isGiftLoading={forms.isGiftDetailsLoading}
+            giftMessage={forms.createGiftMessage}
+            isCreateGiftSubmitting={forms.isCreateGiftSubmitting}
+            userWishlists={wishlists.wishlistsData.map((w) => ({ id: w.id, title: w.title }))}
+            giftWishlists={forms.giftDetailsWishlists}
+            giftId={routes.viewingGiftId}
+            backHref={giftDetailsBackHref}
+            contextListId={giftDetailsResolvedListId}
+            contextListTitle={giftDetailsContextWishlist?.title || ''}
+            contextListMissing={
+              Boolean(giftDetailsResolvedListId) && !giftDetailsContextWishlist && !wishlists.isWishlistsLoading
+            }
+            siblingGifts={giftDetailsSiblingGifts}
+            isWishlistsLoading={wishlists.isWishlistsLoading}
+          />
+        )}
+
+        {routes.showWishlistFormPage && (
           <CreateWishlistPage
-            currentUser={currentUser}
-            onOpenLogin={openLoginModal}
-            createWishlistForm={createWishlistForm}
-            onCreateWishlistFormChange={setCreateWishlistForm}
-            onSubmitCreateWishlist={submitCreateWishlist}
-            createWishlistMessage={createWishlistMessage}
-            isCreateWishlistSubmitting={isCreateWishlistSubmitting}
-            wishlistIconPickerRef={wishlistIconPickerRef}
-            onSelectWishlistIcon={selectWishlistIcon}
+            currentUser={auth.currentUser}
+            onOpenLogin={auth.openLoginModal}
+            wishlistFormIsEdit={Boolean(routes.editingWishlistId)}
+            wishlistFormEditState={
+              !routes.editingWishlistId
+                ? 'na'
+                : !auth.currentUser
+                  ? 'na'
+                  : wishlists.isWishlistsLoading
+                    ? 'loading'
+                    : wishlists.wishlistsData.some((w) => w.id === routes.editingWishlistId)
+                      ? 'ready'
+                      : 'missing'
+            }
+            createWishlistForm={forms.createWishlistForm}
+            onCreateWishlistFormChange={forms.setCreateWishlistForm}
+            onSubmitCreateWishlist={forms.submitCreateWishlist}
+            createWishlistMessage={forms.createWishlistMessage}
+            isCreateWishlistSubmitting={forms.isCreateWishlistSubmitting}
+            wishlistIconPickerRef={forms.wishlistIconPickerRef}
+            onSelectWishlistIcon={forms.selectWishlistIcon}
             onOpenPrivacyModal={() => setIsPrivacyModalOpen(true)}
           />
         )}
 
-        {showProfilePage && (
+        {routes.showProfilePage && (
           <ProfilePage
-            currentUser={currentUser}
-            onOpenLogin={openLoginModal}
-            profileData={profileData}
-            isProfileLoading={isProfileLoading}
-            profileMessage={profileMessage}
-            profileForm={profileForm}
-            onProfileFormChange={setProfileForm}
-            isProfileEditMode={isProfileEditMode}
-            onSetProfileEditMode={setIsProfileEditMode}
+            currentUser={auth.currentUser}
+            onOpenLogin={auth.openLoginModal}
+            profileData={profile.profileData}
+            isProfileLoading={profile.isProfileLoading}
+            profileMessage={profile.profileMessage}
+            profileForm={profile.profileForm}
+            onProfileFormChange={profile.setProfileForm}
+            isProfileEditMode={profile.isProfileEditMode}
+            onSetProfileEditMode={profile.setIsProfileEditMode}
             onBeginProfileEdit={() => {
-              setIsProfileEditMode(true);
-              setIsProfileMenuOpen(false);
+              profile.setIsProfileEditMode(true);
+              profile.setIsProfileMenuOpen(false);
             }}
-            isProfileMenuOpen={isProfileMenuOpen}
-            onToggleProfileMenu={() => setIsProfileMenuOpen((previous) => !previous)}
-            profileDotsMenuRef={profileDotsMenuRef}
-            showIdCopiedHint={showIdCopiedHint}
-            onSaveProfile={saveProfile}
-            onProfilePhotoChange={handleProfilePhotoChange}
-            onCopyProfileId={copyProfileIdUser}
-            onLogout={logoutUser}
+            isProfileMenuOpen={profile.isProfileMenuOpen}
+            onToggleProfileMenu={() => profile.setIsProfileMenuOpen((previous) => !previous)}
+            profileDotsMenuRef={profile.profileDotsMenuRef}
+            showIdCopiedHint={profile.showIdCopiedHint}
+            onSaveProfile={profile.saveProfile}
+            onProfilePhotoChange={profile.handleProfilePhotoChange}
+            onCopyProfileId={profile.copyProfileIdUser}
+            onLogout={auth.logoutUser}
+            isDarkTheme={isDarkTheme}
+            onToggleDarkTheme={() => setIsDarkTheme((previous) => !previous)}
           />
         )}
       </main>
 
       <SiteFooter />
 
-      {isAuthModalOpen && (
+      {auth.isAuthModalOpen && (
         <AuthModal
-          authMode={authMode}
-          onClose={closeAuthModal}
-          onSetAuthMode={setAuthMode}
-          loginForm={loginForm}
-          onLoginFormChange={setLoginForm}
-          registerForm={registerForm}
-          onRegisterFormChange={setRegisterForm}
-          onSubmitLogin={sendLogin}
-          onSubmitRegister={sendRegister}
-          authMessage={authMessage}
-          isAuthLoading={isAuthLoading}
+          authMode={auth.authMode}
+          onClose={auth.closeAuthModal}
+          onSetAuthMode={auth.setAuthMode}
+          loginForm={auth.loginForm}
+          onLoginFormChange={auth.setLoginForm}
+          registerForm={auth.registerForm}
+          onRegisterFormChange={auth.setRegisterForm}
+          onSubmitLogin={auth.sendLogin}
+          onSubmitRegister={auth.sendRegister}
+          authMessage={auth.authMessage}
+          isAuthLoading={auth.isAuthLoading}
         />
       )}
 
       {isPrivacyModalOpen && <PrivacyModal onClose={() => setIsPrivacyModalOpen(false)} />}
+
+      {wishlists.deleteWishlistTarget && (
+        <DeleteWishlistConfirmModal
+          wishlistTitle={wishlists.deleteWishlistTarget.title}
+          onClose={wishlists.closeDeleteWishlistModal}
+          onConfirm={wishlists.confirmDeleteWishlist}
+          isDeleting={wishlists.isDeleteWishlistSubmitting}
+          errorMessage={wishlists.deleteWishlistError}
+        />
+      )}
     </div>
   );
 }

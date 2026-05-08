@@ -1,4 +1,4 @@
-/* Кнопки, типографика заголовков вишлистов, меню «⋯», пустые состояния — используются на нескольких экранах */
+/* Кнопки, типографика заголовков списков желаний, меню «⋯», пустые состояния — используются на нескольких экранах */
 
 .wishlists-title {
   margin: 0;
@@ -23,6 +23,22 @@
   cursor: pointer;
 }
 
+.action-btn--inline-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.action-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
 .primary-btn {
   background: rgba(99, 102, 241, 0.22);
   border-color: rgba(129, 140, 248, 0.42);
@@ -37,6 +53,7 @@
 }
 
 .material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
   font-variation-settings:
     'FILL' 0,
     'wght' 400,
@@ -67,13 +84,16 @@
   position: absolute;
   right: 0;
   top: 2.3rem;
-  min-width: 9.5rem;
+  min-width: 10.25rem;
+  max-width: min(100vw - 1.5rem, 16rem);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
   background: #121212;
   padding: 0.35rem;
   display: grid;
   gap: 0.2rem;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .dots-menu button {
@@ -85,6 +105,8 @@
   background: transparent;
   color: #e5e7eb;
   cursor: pointer;
+  font: inherit;
+  font-size: 0.9375rem;
 }
 
 .dots-menu button:hover {

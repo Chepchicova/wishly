@@ -1,5 +1,8 @@
+import { API_BASE_URL } from '../api/config';
 import { formatBirthdayForDisplay } from '../utils/dateFormat';
+import EventDatePicker from '../components/EventDatePicker';
 import './ProfilePage.css';
+import './CreateWishlistPage.css';
 
 export default function ProfilePage({
   currentUser,
@@ -20,6 +23,8 @@ export default function ProfilePage({
   onProfilePhotoChange,
   onCopyProfileId,
   onLogout,
+  isDarkTheme,
+  onToggleDarkTheme,
 }) {
   return (
     <section className="profile-page">
@@ -51,9 +56,23 @@ export default function ProfilePage({
                     <button type="button" role="menuitem" onClick={onBeginProfileEdit}>
                       Редактировать
                     </button>
-                    <button type="button" role="menuitem" disabled>
-                      Настройки
-                    </button>
+                    <div
+                      className="dots-menu-theme-row"
+                      role="none"
+                      onMouseDown={(event) => event.stopPropagation()}
+                    >
+                      <span className="dots-menu-theme-row__label">Тёмная тема</span>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={isDarkTheme}
+                        className="dots-menu-theme-toggle"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onToggleDarkTheme();
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
               </div>
@@ -66,7 +85,7 @@ export default function ProfilePage({
                   <div className="profile-avatar-wrap">
                     {profileForm.photoDataUrl || profileData.photo_url ? (
                       <img
-                        src={profileForm.photoDataUrl || `http://localhost:5000${profileData.photo_url}`}
+                        src={profileForm.photoDataUrl || `${API_BASE_URL}${profileData.photo_url}`}
                         alt="Фото профиля"
                         className="profile-avatar"
                       />
@@ -101,31 +120,39 @@ export default function ProfilePage({
                         Дата рождения: {formatBirthdayForDisplay(profileData.birthday)}
                       </p>
                     )}
-                    {profileData.description_user && <p>Описание: {profileData.description_user}</p>}
+                    {profileData.description_user ? (
+                      <p className="profile-description-line">
+                        <span className="profile-description-prefix">Описание:</span>{' '}
+                        <span className="profile-description-text">{profileData.description_user}</span>
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 
                 {isProfileEditMode ? (
-                  <form className="profile-edit-form" onSubmit={onSaveProfile}>
+                  <form className="profile-edit-form wishlist-create-form" onSubmit={onSaveProfile}>
                     <label>
-                      Имя
+                      <span className="form-label-row">Имя</span>
                       <input
                         required
                         value={profileForm.name}
                         onChange={(event) => onProfileFormChange({ ...profileForm, name: event.target.value })}
                       />
                     </label>
-                    <label>
-                      Дата рождения
-                      <input
-                        type="date"
+                    <label className="wishlist-event-date-label">
+                      <span className="form-label-row">Дата рождения</span>
+                      <EventDatePicker
+                        id="profile-birthday"
                         value={profileForm.birthday}
-                        onChange={(event) => onProfileFormChange({ ...profileForm, birthday: event.target.value })}
+                        onChange={(nextDate) =>
+                          onProfileFormChange({ ...profileForm, birthday: nextDate })
+                        }
                       />
                     </label>
                     <label>
-                      Описание
+                      <span className="form-label-row">Описание</span>
                       <textarea
+                        className="profile-description-input"
                         rows={4}
                         value={profileForm.descriptionUser}
                         onChange={(event) =>
@@ -134,7 +161,7 @@ export default function ProfilePage({
                       />
                     </label>
                     <label>
-                      Фото профиля
+                      <span className="form-label-row">Фото профиля</span>
                       <input
                         type="file"
                         accept="image/png,image/jpeg,image/webp"

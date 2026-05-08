@@ -19,8 +19,12 @@ npm run server
 
 Перед этим в папке `server` создай файл `.env` по образцу `.env.example` (пароль MySQL и при необходимости хост/база).
 
-## Структура
+## Структура и архитектура
 
-- `src/` — React: `App.js`, `components/MainLayout.js`, `styles/global.css`
-- `public/` — статика CRA
-- `server/` — `index.js` (HTTP), `routes.js` (эндпоинты), `db.js`, `config.js`
+Подробное описание паттерна организации кода, слоёв и дерева папок: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
+
+Кратко:
+
+- **`src/`** — React (CRA): `pages/` (экраны), `components/` (UI), `hooks/` (доменная логика), `api/` (базовый URL API), `navigation/` (разбор URL), `utils/`, `constants/`, `assets/`, `styles/`.
+- **`public/`** — статика CRA.
+- **`server/`** — Node: `index.js` (HTTP), `routes.js` (эндпоинты), `db.js`, `config.js`, при необходимости `sql/`, `uploads/`.

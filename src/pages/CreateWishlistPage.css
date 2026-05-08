@@ -5,22 +5,16 @@
 
 .create-wishlist-inner {
   padding: clamp(1.15rem, 2.5vw, 1.5rem) clamp(1.1rem, 3vw, 1.75rem) clamp(1.35rem, 3vw, 1.85rem);
+  width: 100%;
 }
 
 .create-wishlist-head {
   margin-bottom: 1rem;
 }
 
-.create-wishlist-back {
-  display: inline-block;
-  margin-bottom: 0.55rem;
-  font-size: 0.88rem;
-  color: #a5b4fc;
-  text-decoration: none;
-}
-
-.create-wishlist-back:hover {
-  text-decoration: underline;
+.wishlist-event-date-label {
+  display: grid;
+  gap: 0.35rem;
 }
 
 .create-wishlist-guest {
@@ -176,4 +170,14 @@
   margin: 0;
   color: #fca5a5;
   font-size: 0.9rem;
+}
+
+.wishlist-create-message--muted {
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 0.75rem;
+}
+
+.create-wishlist-inline-link {
+  color: #a5b4fc;
+  font-weight: 500;
 }

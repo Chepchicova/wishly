@@ -1,3 +1,4 @@
+import EventDatePicker from '../components/EventDatePicker';
 import { getWishlistIconUrl, wishlistIconOptions } from '../constants/wishlistIcons';
 import './ProfilePage.css';
 import './CreateWishlistPage.css';
@@ -5,6 +6,8 @@ import './CreateWishlistPage.css';
 export default function CreateWishlistPage({
   currentUser,
   onOpenLogin,
+  wishlistFormIsEdit,
+  wishlistFormEditState,
   createWishlistForm,
   onCreateWishlistFormChange,
   onSubmitCreateWishlist,
@@ -14,20 +17,57 @@ export default function CreateWishlistPage({
   onSelectWishlistIcon,
   onOpenPrivacyModal,
 }) {
+  const pageTitle = wishlistFormIsEdit ? 'Редактировать список желаний' : 'Новый список желаний';
+  const pageSubtitle = wishlistFormIsEdit
+    ? 'Измените поля и сохраните список'
+    : 'Заполните поля и сохраните список';
+  const guestMessage = wishlistFormIsEdit
+    ? 'Чтобы редактировать список желаний, войдите в аккаунт.'
+    : 'Чтобы создать список желаний, войдите в аккаунт.';
+  const submitLabel = wishlistFormIsEdit ? 'Сохранить изменения' : 'Создать список желаний';
+
+  if (wishlistFormIsEdit && wishlistFormEditState === 'loading') {
+    return (
+      <section className="profile-page create-wishlist-page">
+        <div className="profile-card create-wishlist-inner glass-bar">
+          <div className="create-wishlist-head">
+            <h1 className="wishlists-title">{pageTitle}</h1>
+            <p className="wishlists-subtitle">Загрузка данных…</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (wishlistFormIsEdit && wishlistFormEditState === 'missing') {
+    return (
+      <section className="profile-page create-wishlist-page">
+        <div className="profile-card create-wishlist-inner glass-bar">
+          <div className="create-wishlist-head">
+            <h1 className="wishlists-title">Список желаний не найден</h1>
+            <p className="wishlists-subtitle">Возможно, список удалён или у вас нет к нему доступа.</p>
+          </div>
+          <p className="wishlist-create-message wishlist-create-message--muted">
+            <a href="/wishlists" className="create-wishlist-inline-link">
+              Вернуться к спискам
+            </a>
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="profile-page create-wishlist-page">
       <div className="profile-card create-wishlist-inner glass-bar">
         <div className="create-wishlist-head">
-          <a href="/wishlists" className="create-wishlist-back">
-            ← К спискам
-          </a>
-          <h1 className="wishlists-title">Новый вишлист</h1>
-          <p className="wishlists-subtitle">Заполните поля и сохраните список</p>
+          <h1 className="wishlists-title">{pageTitle}</h1>
+          <p className="wishlists-subtitle">{pageSubtitle}</p>
         </div>
 
         {!currentUser ? (
           <div className="profile-card create-wishlist-guest">
-            <p>Чтобы создать вишлист, войдите в аккаунт.</p>
+            <p>{guestMessage}</p>
             <button type="button" className="action-btn primary-btn" onClick={onOpenLogin}>
               Войти
             </button>
@@ -59,13 +99,13 @@ export default function CreateWishlistPage({
               />
             </label>
 
-            <label>
-              Дата события
-              <input
-                type="date"
+            <label className="wishlist-event-date-label">
+              <span className="form-label-row">Дата события</span>
+              <EventDatePicker
+                id="wishlist-event-date"
                 value={createWishlistForm.eventDate}
-                onChange={(event) =>
-                  onCreateWishlistFormChange({ ...createWishlistForm, eventDate: event.target.value })
+                onChange={(nextDate) =>
+                  onCreateWishlistFormChange({ ...createWishlistForm, eventDate: nextDate })
                 }
               />
             </label>
@@ -112,7 +152,7 @@ export default function CreateWishlistPage({
 
             <div className="profile-form-actions">
               <button type="submit" className="action-btn primary-btn" disabled={isCreateWishlistSubmitting}>
-                {isCreateWishlistSubmitting ? 'Сохранение…' : 'Создать вишлист'}
+                {isCreateWishlistSubmitting ? 'Сохранение…' : submitLabel}
               </button>
               <a href="/wishlists" className="action-btn">
                 Отмена

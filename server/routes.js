@@ -71,6 +71,34 @@ function saveProfilePhotoFromDataUrl(idUser, photoDataUrl) {
   return `/uploads/${fileName}`;
 }
 
+function saveGiftImageFromDataUrl(idUser, photoDataUrl) {
+  const dataUrlMatch = photoDataUrl.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+  if (!dataUrlMatch) {
+    throw new Error('Неверный формат изображения подарка');
+  }
+
+  const mimeType = dataUrlMatch[1];
+  const base64Data = dataUrlMatch[2];
+
+  const extensionByMimeType = {
+    'image/png': 'png',
+    'image/jpeg': 'jpg',
+    'image/jpg': 'jpg',
+    'image/webp': 'webp',
+  };
+
+  const fileExtension = extensionByMimeType[mimeType];
+  if (!fileExtension) {
+    throw new Error('Неподдерживаемый формат изображения');
+  }
+
+  const fileName = `gift_user_${idUser}_${Date.now()}.${fileExtension}`;
+  const absoluteFilePath = path.join(uploadsDirectoryPath, fileName);
+  fs.writeFileSync(absoluteFilePath, Buffer.from(base64Data, 'base64'));
+
+  return `/uploads/${fileName}`;
+}
+
 function createRandomUserId() {
   return Math.floor(10000000 + Math.random() * 90000000);
 }
@@ -430,33 +458,6 @@ const WISHLIST_ICON_VALUES = [
 
 const WISHLIST_STATUS_VALUES = ['private', 'shared', 'public'];
 
-function makeBaseSlugFromTitle(title) {
-  let slug = String(title || '')
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9а-яёії-]+/gi, '');
-  if (slug.length > 180) {
-    slug = slug.slice(0, 180).replace(/-+$/g, '');
-  }
-  return slug || 'wishlist';
-}
-
-async function ensureUniqueWishlistSlug(ownerId, baseSlug) {
-  const safeBase = baseSlug.slice(0, 200);
-  for (let attempt = 0; attempt < 100; attempt += 1) {
-    const candidate = attempt === 0 ? safeBase : `${safeBase}-${attempt}`.slice(0, 200);
-    const [rows] = await db.query(
-      'SELECT id FROM wishlists WHERE owner_id = ? AND slug = ? LIMIT 1',
-      [ownerId, candidate]
-    );
-    if (rows.length === 0) {
-      return candidate;
-    }
-  }
-  return `${safeBase.slice(0, 160)}-${Date.now()}`.slice(0, 200);
-}
-
 async function handleCreateWishlist(request, response, idUser) {
   let requestBody = {};
   try {
@@ -466,14 +467,61 @@ async function handleCreateWishlist(request, response, idUser) {
     return;
   }
 
-  const title = typeof requestBody.title === 'string' ? requestBody.title.trim() : '';
-  if (!title) {
-    sendJson(response, 400, { success: false, error: 'Укажите название вишлиста' });
+  const parsed = parseWishlistBodyForWrite(requestBody);
+  if (parsed.error) {
+    sendJson(response, 400, { success: false, error: parsed.error });
     return;
   }
+
+  const { title, description, dateEvent, icon, status } = parsed;
+
+  try {
+    const [users] = await db.query('SELECT id FROM users WHERE id_user = ? LIMIT 1', [idUser]);
+    if (users.length === 0) {
+      sendJson(response, 404, { success: false, error: 'Пользователь не найден' });
+      return;
+    }
+
+    const ownerId = users[0].id;
+
+    const [result] = await db.query(
+      `
+      INSERT INTO wishlists (
+        owner_id,
+        title_wishlist,
+        description_wishlist,
+        date_event,
+        icon,
+        status
+      )
+      VALUES (?, ?, ?, ?, ?, ?)
+      `,
+      [ownerId, title, description || null, dateEvent, icon, status]
+    );
+
+    sendJson(response, 201, {
+      success: true,
+      wishlist: {
+        id: String(result.insertId),
+      },
+    });
+  } catch (error) {
+    logServerError('CREATE WISHLIST ERROR', error, { idUser });
+    sendJson(response, 500, {
+      success: false,
+      error: 'Не удалось создать список желаний',
+      technical: error.sqlMessage || error.message,
+    });
+  }
+}
+
+function parseWishlistBodyForWrite(requestBody) {
+  const title = typeof requestBody.title === 'string' ? requestBody.title.trim() : '';
+  if (!title) {
+    return { error: 'Укажите название списка желаний' };
+  }
   if (title.length > 200) {
-    sendJson(response, 400, { success: false, error: 'Название слишком длинное' });
-    return;
+    return { error: 'Название слишком длинное' };
   }
 
   const description = typeof requestBody.description === 'string' ? requestBody.description.trim() : '';
@@ -481,8 +529,7 @@ async function handleCreateWishlist(request, response, idUser) {
   if (requestBody.dateEvent != null && String(requestBody.dateEvent).trim() !== '') {
     const rawDate = String(requestBody.dateEvent).trim();
     if (!/^\d{4}-\d{2}-\d{2}$/.test(rawDate)) {
-      sendJson(response, 400, { success: false, error: 'Некорректная дата события' });
-      return;
+      return { error: 'Некорректная дата события' };
     }
     dateEvent = rawDate;
   }
@@ -493,6 +540,32 @@ async function handleCreateWishlist(request, response, idUser) {
   const rawStatus = typeof requestBody.status === 'string' ? requestBody.status.trim().toLowerCase() : 'private';
   const status = WISHLIST_STATUS_VALUES.includes(rawStatus) ? rawStatus : 'private';
 
+  return { title, description, dateEvent, icon, status };
+}
+
+async function handleUpdateWishlist(request, response, idUser, wishlistIdRaw) {
+  const wishlistId = String(wishlistIdRaw || '').trim();
+  if (!/^\d+$/.test(wishlistId)) {
+    sendJson(response, 400, { success: false, error: 'Некорректный идентификатор списка желаний' });
+    return;
+  }
+
+  let requestBody = {};
+  try {
+    requestBody = await readJsonBody(request);
+  } catch (error) {
+    sendJson(response, 400, { success: false, error: 'Некорректный JSON' });
+    return;
+  }
+
+  const parsed = parseWishlistBodyForWrite(requestBody);
+  if (parsed.error) {
+    sendJson(response, 400, { success: false, error: parsed.error });
+    return;
+  }
+
+  const { title, description, dateEvent, icon, status } = parsed;
+
   try {
     const [users] = await db.query('SELECT id FROM users WHERE id_user = ? LIMIT 1', [idUser]);
     if (users.length === 0) {
@@ -501,39 +574,575 @@ async function handleCreateWishlist(request, response, idUser) {
     }
 
     const ownerId = users[0].id;
-    const baseSlug = makeBaseSlugFromTitle(title);
-    const slug = await ensureUniqueWishlistSlug(ownerId, baseSlug);
+    const [existing] = await db.query(
+      'SELECT wishlist_id FROM wishlists WHERE wishlist_id = ? AND owner_id = ? LIMIT 1',
+      [wishlistId, ownerId]
+    );
+    if (existing.length === 0) {
+      sendJson(response, 404, { success: false, error: 'Список желаний не найден' });
+      return;
+    }
 
-    const [result] = await db.query(
+    await db.query(
       `
-      INSERT INTO wishlists (
-        owner_id,
-        title_wishlist,
-        description_wishlist,
-        slug,
-        date_event,
-        icon,
+      UPDATE wishlists
+      SET
+        title_wishlist = ?,
+        description_wishlist = ?,
+        date_event = ?,
+        icon = ?,
+        status = ?
+      WHERE wishlist_id = ? AND owner_id = ?
+      `,
+      [title, description || null, dateEvent, icon, status, wishlistId, ownerId]
+    );
+
+    sendJson(response, 200, {
+      success: true,
+      wishlist: { id: wishlistId },
+    });
+  } catch (error) {
+    logServerError('UPDATE WISHLIST ERROR', error, { idUser, wishlistId });
+    sendJson(response, 500, {
+      success: false,
+      error: 'Не удалось сохранить список желаний',
+      technical: error.sqlMessage || error.message,
+    });
+  }
+}
+
+async function handleDeleteWishlist(response, idUser, wishlistIdRaw) {
+  const wishlistId = String(wishlistIdRaw || '').trim();
+  if (!/^\d+$/.test(wishlistId)) {
+    sendJson(response, 400, { success: false, error: 'Некорректный идентификатор списка желаний' });
+    return;
+  }
+
+  let connection;
+  try {
+    const [users] = await db.query('SELECT id FROM users WHERE id_user = ? LIMIT 1', [idUser]);
+    if (users.length === 0) {
+      sendJson(response, 404, { success: false, error: 'Пользователь не найден' });
+      return;
+    }
+
+    const ownerId = users[0].id;
+    const [rows] = await db.query(
+      'SELECT wishlist_id FROM wishlists WHERE wishlist_id = ? AND owner_id = ? LIMIT 1',
+      [wishlistId, ownerId]
+    );
+
+    if (rows.length === 0) {
+      sendJson(response, 404, { success: false, error: 'Список желаний не найден' });
+      return;
+    }
+
+    const [giftRows] = await db.query(
+      'SELECT DISTINCT gift_id FROM gift_wishlists WHERE wishlist_id = ?',
+      [wishlistId]
+    );
+    const giftIds = giftRows.map((r) => r.gift_id);
+
+    connection = await db.getConnection();
+    await connection.beginTransaction();
+
+    const [delWishlist] = await connection.query(
+      'DELETE FROM wishlists WHERE wishlist_id = ? AND owner_id = ?',
+      [wishlistId, ownerId]
+    );
+
+    if (!delWishlist.affectedRows) {
+      await connection.rollback();
+      sendJson(response, 404, { success: false, error: 'Список желаний не найден' });
+      return;
+    }
+
+    /* Связи gift_wishlists удаляются каскадом при удалении списка желаний. Удаляем «осиротевшие» подарки,
+       которые больше не привязаны ни к одному списку. */
+    if (giftIds.length > 0) {
+      const placeholders = giftIds.map(() => '?').join(',');
+      await connection.query(
+        `
+        DELETE FROM gifts
+        WHERE gift_id IN (${placeholders})
+          AND NOT EXISTS (SELECT 1 FROM gift_wishlists gw WHERE gw.gift_id = gifts.gift_id)
+        `,
+        giftIds
+      );
+    }
+
+    await connection.commit();
+    sendJson(response, 200, { success: true });
+  } catch (error) {
+    if (connection) {
+      try {
+        await connection.rollback();
+      } catch {
+        /* ignore */
+      }
+    }
+    logServerError('DELETE WISHLIST ERROR', error, { idUser, wishlistId });
+    sendJson(response, 500, {
+      success: false,
+      error: 'Не удалось удалить список желаний',
+      technical: error.sqlMessage || error.message,
+    });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
+function parseCreateGiftBody(requestBody) {
+  const title = typeof requestBody.title === 'string' ? requestBody.title.trim() : '';
+  if (!title) {
+    return { error: 'Укажите название подарка' };
+  }
+  if (title.length > 200) {
+    return { error: 'Название подарка слишком длинное' };
+  }
+
+  const description =
+    typeof requestBody.description === 'string' ? requestBody.description.trim() : '';
+
+  let price = null;
+  if (requestBody.price != null && String(requestBody.price).trim() !== '') {
+    const n = Number(String(requestBody.price).replace(',', '.'));
+    if (Number.isNaN(n) || n < 0) {
+      return { error: 'Укажите корректную цену' };
+    }
+    price = n;
+  }
+
+  const urlRaw = typeof requestBody.url === 'string' ? requestBody.url.trim() : '';
+  const url = urlRaw || null;
+
+  const rawIds = requestBody.wishlistIds;
+  if (!Array.isArray(rawIds) || rawIds.length === 0) {
+    return { error: 'Выберите хотя бы один список желаний' };
+  }
+
+  const wishlistIdSet = new Set();
+  for (const item of rawIds) {
+    const sid = String(item ?? '').trim();
+    if (!/^\d+$/.test(sid)) {
+      return { error: 'Некорректный список желаний' };
+    }
+    wishlistIdSet.add(sid);
+  }
+
+  const wishlistIds = Array.from(wishlistIdSet);
+
+  const imageDataUrl =
+    typeof requestBody.imageDataUrl === 'string' && requestBody.imageDataUrl.trim()
+      ? requestBody.imageDataUrl.trim()
+      : null;
+
+  return { title, description, price, url, wishlistIds, imageDataUrl };
+}
+
+async function handleCreateGift(request, response, idUser) {
+  let requestBody = {};
+  try {
+    requestBody = await readJsonBody(request);
+  } catch (error) {
+    sendJson(response, 400, { success: false, error: 'Некорректный JSON' });
+    return;
+  }
+
+  const parsed = parseCreateGiftBody(requestBody);
+  if (parsed.error) {
+    sendJson(response, 400, { success: false, error: parsed.error });
+    return;
+  }
+
+  const { title, description, price, url, wishlistIds, imageDataUrl } = parsed;
+
+  let connection;
+  try {
+    const [users] = await db.query('SELECT id FROM users WHERE id_user = ? LIMIT 1', [idUser]);
+    if (users.length === 0) {
+      sendJson(response, 404, { success: false, error: 'Пользователь не найден' });
+      return;
+    }
+
+    const ownerId = users[0].id;
+    const placeholders = wishlistIds.map(() => '?').join(',');
+    const [ownedRows] = await db.query(
+      `
+      SELECT wishlist_id
+      FROM wishlists
+      WHERE owner_id = ? AND wishlist_id IN (${placeholders})
+      `,
+      [ownerId, ...wishlistIds.map((id) => Number(id))]
+    );
+
+    if (ownedRows.length !== wishlistIds.length) {
+      sendJson(response, 403, {
+        success: false,
+        error: 'Можно добавлять подарки только в свои списки желаний',
+      });
+      return;
+    }
+
+    let imagePath = null;
+    if (imageDataUrl) {
+      imagePath = saveGiftImageFromDataUrl(idUser, imageDataUrl);
+    }
+
+    connection = await db.getConnection();
+    await connection.beginTransaction();
+
+    const [insertGift] = await connection.query(
+      `
+      INSERT INTO gifts (
+        title_gift,
+        description_gift,
+        price,
+        url,
+        image_path,
         status
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, 'free')
       `,
-      [ownerId, title, description || null, slug, dateEvent, icon, status]
+      [title, description || null, price, url, imagePath]
     );
+
+    const giftId = insertGift.insertId;
+
+    for (const wlId of wishlistIds) {
+      await connection.query(
+        'INSERT INTO gift_wishlists (gift_id, wishlist_id) VALUES (?, ?)',
+        [giftId, Number(wlId)]
+      );
+    }
+
+    await connection.commit();
 
     sendJson(response, 201, {
       success: true,
-      wishlist: {
-        id: String(result.insertId),
-        slug,
+      gift: { id: String(giftId) },
+    });
+  } catch (error) {
+    if (connection) {
+      try {
+        await connection.rollback();
+      } catch {
+        /* ignore */
+      }
+    }
+    if (error.message && error.message.includes('Неверный формат')) {
+      sendJson(response, 400, { success: false, error: error.message });
+      return;
+    }
+    logServerError('CREATE GIFT ERROR', error, { idUser });
+    sendJson(response, 500, {
+      success: false,
+      error: 'Не удалось создать подарок',
+      technical: error.sqlMessage || error.message,
+    });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
+async function handleGetGiftDetails(response, idUser, giftIdRaw) {
+  const giftId = String(giftIdRaw || '').trim();
+  if (!/^\d+$/.test(giftId)) {
+    sendJson(response, 400, { success: false, error: 'Некорректный идентификатор подарка' });
+    return;
+  }
+
+  try {
+    const [users] = await db.query('SELECT id FROM users WHERE id_user = ? LIMIT 1', [idUser]);
+    if (users.length === 0) {
+      sendJson(response, 404, { success: false, error: 'Пользователь не найден' });
+      return;
+    }
+    const ownerId = users[0].id;
+
+    const [rows] = await db.query(
+      `
+      SELECT
+        g.gift_id,
+        g.title_gift,
+        g.description_gift,
+        g.price,
+        g.url,
+        g.image_path,
+        g.status,
+        w.wishlist_id,
+        w.title_wishlist
+      FROM gifts g
+      INNER JOIN gift_wishlists gw ON gw.gift_id = g.gift_id
+      INNER JOIN wishlists w ON w.wishlist_id = gw.wishlist_id
+      WHERE g.gift_id = ? AND w.owner_id = ?
+      ORDER BY w.created_at DESC
+      `,
+      [Number(giftId), ownerId]
+    );
+
+    if (rows.length === 0) {
+      sendJson(response, 404, { success: false, error: 'Подарок не найден' });
+      return;
+    }
+
+    const first = rows[0];
+    sendJson(response, 200, {
+      success: true,
+      gift: {
+        id: String(first.gift_id),
+        title: first.title_gift,
+        description: first.description_gift || '',
+        price: first.price != null ? String(first.price) : '',
+        url: first.url || '',
+        imagePath: first.image_path || null,
+        status: first.status || 'free',
+        wishlistIds: rows.map((r) => String(r.wishlist_id)),
+        wishlists: rows.map((r) => ({
+          id: String(r.wishlist_id),
+          title: r.title_wishlist,
+        })),
       },
     });
   } catch (error) {
-    logServerError('CREATE WISHLIST ERROR', error, { idUser });
+    logServerError('GET GIFT DETAILS ERROR', error, { idUser, giftId });
     sendJson(response, 500, {
       success: false,
-      error: 'Не удалось создать вишлист',
+      error: 'Не удалось получить данные подарка',
       technical: error.sqlMessage || error.message,
     });
+  }
+}
+
+async function handleUpdateGift(request, response, idUser, giftIdRaw) {
+  const giftId = String(giftIdRaw || '').trim();
+  if (!/^\d+$/.test(giftId)) {
+    sendJson(response, 400, { success: false, error: 'Некорректный идентификатор подарка' });
+    return;
+  }
+
+  let requestBody = {};
+  try {
+    requestBody = await readJsonBody(request);
+  } catch (error) {
+    sendJson(response, 400, { success: false, error: 'Некорректный JSON' });
+    return;
+  }
+
+  const parsed = parseCreateGiftBody(requestBody);
+  if (parsed.error) {
+    sendJson(response, 400, { success: false, error: parsed.error });
+    return;
+  }
+
+  const { title, description, price, url, wishlistIds, imageDataUrl } = parsed;
+  let connection;
+  try {
+    const [users] = await db.query('SELECT id FROM users WHERE id_user = ? LIMIT 1', [idUser]);
+    if (users.length === 0) {
+      sendJson(response, 404, { success: false, error: 'Пользователь не найден' });
+      return;
+    }
+    const ownerId = users[0].id;
+
+    const [giftAccess] = await db.query(
+      `
+      SELECT g.gift_id
+      FROM gifts g
+      INNER JOIN gift_wishlists gw ON gw.gift_id = g.gift_id
+      INNER JOIN wishlists w ON w.wishlist_id = gw.wishlist_id
+      WHERE g.gift_id = ? AND w.owner_id = ?
+      LIMIT 1
+      `,
+      [Number(giftId), ownerId]
+    );
+    if (!giftAccess.length) {
+      sendJson(response, 404, { success: false, error: 'Подарок не найден' });
+      return;
+    }
+
+    const placeholders = wishlistIds.map(() => '?').join(',');
+    const [ownedRows] = await db.query(
+      `
+      SELECT wishlist_id
+      FROM wishlists
+      WHERE owner_id = ? AND wishlist_id IN (${placeholders})
+      `,
+      [ownerId, ...wishlistIds.map((id) => Number(id))]
+    );
+    if (ownedRows.length !== wishlistIds.length) {
+      sendJson(response, 403, {
+        success: false,
+        error: 'Можно привязывать подарок только к своим спискам желаний',
+      });
+      return;
+    }
+
+    let imagePath = null;
+    if (imageDataUrl) {
+      imagePath = saveGiftImageFromDataUrl(idUser, imageDataUrl);
+    }
+
+    connection = await db.getConnection();
+    await connection.beginTransaction();
+
+    if (imagePath) {
+      await connection.query(
+        `
+        UPDATE gifts
+        SET title_gift = ?, description_gift = ?, price = ?, url = ?, image_path = ?
+        WHERE gift_id = ?
+        `,
+        [title, description || null, price, url, imagePath, Number(giftId)]
+      );
+    } else {
+      await connection.query(
+        `
+        UPDATE gifts
+        SET title_gift = ?, description_gift = ?, price = ?, url = ?
+        WHERE gift_id = ?
+        `,
+        [title, description || null, price, url, Number(giftId)]
+      );
+    }
+
+    await connection.query(
+      `
+      DELETE gw FROM gift_wishlists gw
+      INNER JOIN wishlists w ON w.wishlist_id = gw.wishlist_id
+      WHERE gw.gift_id = ? AND w.owner_id = ?
+      `,
+      [Number(giftId), ownerId]
+    );
+    for (const wlId of wishlistIds) {
+      await connection.query(
+        'INSERT INTO gift_wishlists (gift_id, wishlist_id) VALUES (?, ?)',
+        [Number(giftId), Number(wlId)]
+      );
+    }
+
+    await connection.commit();
+    sendJson(response, 200, { success: true, gift: { id: giftId } });
+  } catch (error) {
+    if (connection) {
+      try {
+        await connection.rollback();
+      } catch {
+        /* ignore */
+      }
+    }
+    logServerError('UPDATE GIFT ERROR', error, { idUser, giftId });
+    sendJson(response, 500, {
+      success: false,
+      error: 'Не удалось сохранить подарок',
+      technical: error.sqlMessage || error.message,
+    });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
+async function handleDeleteGift(requestUrl, response, idUser, giftIdRaw) {
+  const giftId = String(giftIdRaw || '').trim();
+  if (!/^\d+$/.test(giftId)) {
+    sendJson(response, 400, { success: false, error: 'Некорректный идентификатор подарка' });
+    return;
+  }
+
+  const scope = String(requestUrl.searchParams.get('scope') || 'all').trim().toLowerCase();
+  const wishlistIdRaw = String(requestUrl.searchParams.get('wishlistId') || '').trim();
+
+  let connection;
+  try {
+    const [users] = await db.query('SELECT id FROM users WHERE id_user = ? LIMIT 1', [idUser]);
+    if (users.length === 0) {
+      sendJson(response, 404, { success: false, error: 'Пользователь не найден' });
+      return;
+    }
+    const ownerId = users[0].id;
+
+    const [giftLists] = await db.query(
+      `
+      SELECT w.wishlist_id
+      FROM gift_wishlists gw
+      INNER JOIN wishlists w ON w.wishlist_id = gw.wishlist_id
+      WHERE gw.gift_id = ? AND w.owner_id = ?
+      `,
+      [Number(giftId), ownerId]
+    );
+    if (!giftLists.length) {
+      sendJson(response, 404, { success: false, error: 'Подарок не найден' });
+      return;
+    }
+
+    connection = await db.getConnection();
+    await connection.beginTransaction();
+
+    if (scope === 'wishlist') {
+      if (!/^\d+$/.test(wishlistIdRaw)) {
+        await connection.rollback();
+        sendJson(response, 400, { success: false, error: 'Некорректный идентификатор списка желаний' });
+        return;
+      }
+      const [delLink] = await connection.query(
+        `
+        DELETE gw FROM gift_wishlists gw
+        INNER JOIN wishlists w ON w.wishlist_id = gw.wishlist_id
+        WHERE gw.gift_id = ? AND gw.wishlist_id = ? AND w.owner_id = ?
+        `,
+        [Number(giftId), Number(wishlistIdRaw), ownerId]
+      );
+      if (!delLink.affectedRows) {
+        await connection.rollback();
+        sendJson(response, 404, { success: false, error: 'Связь подарка со списком не найдена' });
+        return;
+      }
+    } else {
+      await connection.query(
+        `
+        DELETE gw FROM gift_wishlists gw
+        INNER JOIN wishlists w ON w.wishlist_id = gw.wishlist_id
+        WHERE gw.gift_id = ? AND w.owner_id = ?
+        `,
+        [Number(giftId), ownerId]
+      );
+    }
+
+    await connection.query(
+      `
+      DELETE FROM gifts
+      WHERE gift_id = ?
+        AND NOT EXISTS (SELECT 1 FROM gift_wishlists gw WHERE gw.gift_id = gifts.gift_id)
+      `,
+      [Number(giftId)]
+    );
+
+    await connection.commit();
+    sendJson(response, 200, { success: true });
+  } catch (error) {
+    if (connection) {
+      try {
+        await connection.rollback();
+      } catch {
+        /* ignore */
+      }
+    }
+    logServerError('DELETE GIFT ERROR', error, { idUser, giftId, scope });
+    sendJson(response, 500, {
+      success: false,
+      error: 'Не удалось удалить подарок',
+      technical: error.sqlMessage || error.message,
+    });
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 }
 
@@ -548,17 +1157,20 @@ async function handleGetWishlists(response, idUser) {
     const [rows] = await db.query(
       `
       SELECT
-        w.id AS wishlist_id,
+        w.wishlist_id,
         w.title_wishlist,
         w.description_wishlist,
         w.icon,
         DATE_FORMAT(w.date_event, '%Y-%m-%d') AS date_event,
-        g.id AS gift_id,
+        g.gift_id,
         g.title_gift,
-        g.description_gift
+        g.description_gift,
+        g.image_path,
+        g.price
       FROM wishlists AS w
       INNER JOIN users AS u ON u.id = w.owner_id
-      LEFT JOIN gifts AS g ON g.wishlist_id = w.id
+      LEFT JOIN gift_wishlists AS gw ON gw.wishlist_id = w.wishlist_id
+      LEFT JOIN gifts AS g ON g.gift_id = gw.gift_id
       WHERE u.id_user = ?
       ORDER BY w.created_at DESC, g.created_at ASC
       `,
@@ -581,8 +1193,11 @@ async function handleGetWishlists(response, idUser) {
       if (row.gift_id) {
         wishlistsById.get(row.wishlist_id).wishes.push({
           id: `gift_${row.gift_id}`,
+          giftId: String(row.gift_id),
           title: row.title_gift,
           note: row.description_gift || '',
+          imagePath: row.image_path || null,
+          price: row.price != null ? row.price : null,
         });
       }
     }
@@ -595,7 +1210,7 @@ async function handleGetWishlists(response, idUser) {
     logServerError('GET WISHLISTS ERROR', error, { idUser });
     sendJson(response, 500, {
       success: false,
-      error: 'Не удалось получить вишлисты',
+      error: 'Не удалось получить списки желаний',
       technical: error.sqlMessage || error.message,
     });
   }
@@ -606,6 +1221,9 @@ async function dispatch(request, response) {
   const normalizedPathname = normalizePathname(requestUrl.pathname);
   const profileRouteMatch = normalizedPathname.match(/^\/api\/profile\/(\d{8})$/);
   const wishlistsRouteMatch = normalizedPathname.match(/^\/api\/wishlists\/(\d{8})$/);
+  const wishlistItemRouteMatch = normalizedPathname.match(/^\/api\/wishlists\/(\d{8})\/(\d+)$/);
+  const createGiftRouteMatch = normalizedPathname.match(/^\/api\/gifts\/(\d{8})$/);
+  const giftItemRouteMatch = normalizedPathname.match(/^\/api\/gifts\/(\d{8})\/(\d+)$/);
 
   if (request.method === 'GET' && (normalizedPathname === '/' || normalizedPathname === '/api')) {
     sendJson(response, 200, {
@@ -642,6 +1260,45 @@ async function dispatch(request, response) {
 
   if (wishlistsRouteMatch && request.method === 'POST') {
     await handleCreateWishlist(request, response, Number(wishlistsRouteMatch[1]));
+    return;
+  }
+
+  if (wishlistItemRouteMatch && request.method === 'PUT') {
+    await handleUpdateWishlist(
+      request,
+      response,
+      Number(wishlistItemRouteMatch[1]),
+      wishlistItemRouteMatch[2]
+    );
+    return;
+  }
+
+  if (wishlistItemRouteMatch && request.method === 'DELETE') {
+    await handleDeleteWishlist(
+      response,
+      Number(wishlistItemRouteMatch[1]),
+      wishlistItemRouteMatch[2]
+    );
+    return;
+  }
+
+  if (createGiftRouteMatch && request.method === 'POST') {
+    await handleCreateGift(request, response, Number(createGiftRouteMatch[1]));
+    return;
+  }
+
+  if (giftItemRouteMatch && request.method === 'GET') {
+    await handleGetGiftDetails(response, Number(giftItemRouteMatch[1]), giftItemRouteMatch[2]);
+    return;
+  }
+
+  if (giftItemRouteMatch && request.method === 'PUT') {
+    await handleUpdateGift(request, response, Number(giftItemRouteMatch[1]), giftItemRouteMatch[2]);
+    return;
+  }
+
+  if (giftItemRouteMatch && request.method === 'DELETE') {
+    await handleDeleteGift(requestUrl, response, Number(giftItemRouteMatch[1]), giftItemRouteMatch[2]);
     return;
   }
 

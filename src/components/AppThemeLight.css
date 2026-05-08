@@ -1,0 +1,732 @@
+/* Светлая тема: активируется классом app-shell--theme-light на корне (см. MainLayout, переключатель в профиле). */
+
+.app-shell.app-shell--theme-light {
+  color: #334155;
+}
+
+.app-shell.app-shell--theme-light::before {
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -25%, rgba(99, 102, 241, 0.28), transparent 55%),
+    radial-gradient(ellipse 90% 50% at 100% 0%, rgba(139, 92, 246, 0.18), transparent 45%),
+    radial-gradient(ellipse 70% 45% at 0% 100%, rgba(59, 130, 246, 0.14), transparent 50%),
+    #f1f5f9;
+}
+
+.app-shell.app-shell--theme-light::after {
+  opacity: 0.62;
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.115) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.115) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 88% 72% at 50% 42%, black 22%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse 88% 72% at 50% 42%, black 22%, transparent 72%);
+}
+
+.app-shell--theme-light .site-header {
+  background: rgba(255, 255, 255, 0.78);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.14);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.app-shell--theme-light .site-header.glass-bar {
+  border: none;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.14);
+  box-shadow: none;
+}
+
+.app-shell--theme-light .logo {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .logo-mark {
+  color: #4f46e5;
+}
+
+.app-shell--theme-light .nav-link {
+  color: rgba(15, 23, 42, 0.52);
+}
+
+.app-shell--theme-light .nav-link:hover {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .nav-link--active {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .profile-block {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .profile-block:hover {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .auth-open-button {
+  border: 1px solid rgba(15, 23, 42, 0.19);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .site-footer {
+  background: rgba(255, 255, 255, 0.72);
+  border-top: 1px solid rgba(15, 23, 42, 0.14);
+}
+
+.app-shell--theme-light .site-footer.glass-bar {
+  border: none;
+  border-top: 1px solid rgba(15, 23, 42, 0.14);
+  box-shadow: none;
+}
+
+.app-shell--theme-light .footer-inner {
+  color: rgba(15, 23, 42, 0.42);
+}
+
+.app-shell--theme-light .wishlists-title {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .wishlists-subtitle {
+  color: rgba(15, 23, 42, 0.58);
+}
+
+.app-shell--theme-light .action-btn {
+  border: 1px solid rgba(15, 23, 42, 0.19);
+  background: rgba(255, 255, 255, 0.9);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .primary-btn {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(79, 70, 229, 0.48);
+  color: #312e81;
+}
+
+.app-shell--theme-light .dots-btn {
+  border: 1px solid rgba(15, 23, 42, 0.19);
+  background: rgba(255, 255, 255, 0.9);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .dots-menu {
+  border: 1px solid rgba(15, 23, 42, 0.19);
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+.app-shell--theme-light .dots-menu button {
+  color: #1e293b;
+}
+
+.app-shell--theme-light .dots-menu button:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .dots-menu-theme-row__label {
+  color: #1e293b;
+  font-size: 0.9375rem;
+}
+
+.app-shell--theme-light .dots-menu-theme-toggle {
+  border-color: rgba(15, 23, 42, 0.3);
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.app-shell--theme-light .dots-menu-theme-toggle[aria-checked='true'] {
+  background: rgba(99, 102, 241, 0.35);
+  border-color: rgba(79, 70, 229, 0.55);
+}
+
+.app-shell--theme-light .wishlists-page .wishlists-panel {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.app-shell--theme-light .wishlists-page .search-wrap {
+  border: 1px solid rgba(15, 23, 42, 0.19);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.app-shell--theme-light .wishlists-page .search-field-icon {
+  color: rgba(15, 23, 42, 0.4);
+}
+
+.app-shell--theme-light .wishlists-page .search-wrap input {
+  color: #1e293b;
+}
+
+.app-shell--theme-light .wishlists-page .search-wrap input::placeholder {
+  color: rgba(15, 23, 42, 0.42);
+}
+
+.app-shell--theme-light .wishlists-page .search-wrap:focus-within {
+  border-color: rgba(79, 70, 229, 0.45);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.18);
+}
+
+.app-shell--theme-light .wishlists-page .wishlist-chip {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.75);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .wishlists-page .wishlist-chip.is-selected {
+  border-color: rgba(79, 70, 229, 0.45);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.app-shell--theme-light .wishlists-page .chip-meta small {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .wishlists-page .wishlist-content-head {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.app-shell--theme-light .wishlists-page .content-main-meta h2 {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .wishlists-page .content-main-meta p {
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.app-shell--theme-light .wishlists-page .event-date {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.app-shell--theme-light .wishlists-page .empty-note {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .wishlists-page .wish-card {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.app-shell--theme-light .wishlists-page .wish-card-link:hover {
+  border-color: rgba(79, 70, 229, 0.38);
+}
+
+.app-shell--theme-light .wishlists-page .wish-card__image-wrap {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .wishlists-page .wish-card__title {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .wishlists-page .wish-card__desc {
+  color: rgba(15, 23, 42, 0.58);
+}
+
+.app-shell--theme-light .wishlists-page .wish-card__price {
+  color: #5b21b6;
+}
+
+.app-shell--theme-light .profile-card {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.app-shell--theme-light .profile-card .profile-card {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.app-shell--theme-light .profile-page-title,
+.app-shell--theme-light .profile-card > h1 {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .profile-main-info h1 {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .profile-main-info p,
+.app-shell--theme-light .profile-card > p {
+  color: rgba(15, 23, 42, 0.75);
+}
+
+/* Выше по каскаду ProfilePage.css задаёт светлый цвет для p — дата рождения должна читаться в светлой теме */
+.app-shell--theme-light .profile-main-info p.profile-birthday-line {
+  color: rgba(15, 23, 42, 0.82);
+}
+
+.app-shell--theme-light .profile-description-line {
+  color: rgba(15, 23, 42, 0.75);
+}
+
+.app-shell--theme-light .profile-id-label {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.app-shell--theme-light .profile-id-value {
+  color: rgba(15, 23, 42, 0.75);
+}
+
+.app-shell--theme-light .profile-id-clickable:hover {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .profile-avatar-wrap {
+  border-color: rgba(15, 23, 42, 0.24);
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.app-shell--theme-light .profile-avatar-svg {
+  color: rgba(15, 23, 42, 0.35);
+}
+
+.app-shell--theme-light .profile-edit-form input,
+.app-shell--theme-light .profile-edit-form textarea {
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .wishlist-create-form.profile-edit-form input[type='file'] {
+  border: 1px dashed rgba(15, 23, 42, 0.28);
+  background: rgba(255, 255, 255, 0.92);
+  color: rgba(30, 41, 59, 0.88);
+}
+
+.app-shell--theme-light .wishlist-create-form.profile-edit-form input[type='file']:hover {
+  border-color: rgba(79, 70, 229, 0.5);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.app-shell--theme-light .wishlist-create-form.profile-edit-form input[type='file']:focus-visible {
+  border-color: rgba(79, 70, 229, 0.62);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+}
+
+.app-shell--theme-light .wishlist-create-form.profile-edit-form input[type='file']::file-selector-button {
+  border: 1px solid rgba(15, 23, 42, 0.24);
+  background: #ffffff;
+  color: #1e293b;
+}
+
+.app-shell--theme-light .wishlist-create-form.profile-edit-form input[type='file']::file-selector-button:hover {
+  border-color: rgba(79, 70, 229, 0.5);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.app-shell--theme-light .profile-message {
+  color: #5b21b6;
+}
+
+.app-shell--theme-light .wishlist-create-form .form-label-row,
+.app-shell--theme-light .wishlist-create-form.profile-edit-form label,
+.app-shell--theme-light .wishlist-create-form .wishlist-icon-field-label {
+  color: rgba(15, 23, 42, 0.88);
+}
+
+.app-shell--theme-light .wishlist-icon-details {
+  border-color: rgba(15, 23, 42, 0.19);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.app-shell--theme-light .wishlist-icon-details[open] {
+  border-color: rgba(79, 70, 229, 0.4);
+}
+
+.app-shell--theme-light .wishlist-icon-summary-text {
+  color: #1e293b;
+}
+
+.app-shell--theme-light .wishlist-icon-chevron {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.app-shell--theme-light .wishlist-icon-grid {
+  border-top-color: rgba(15, 23, 42, 0.13);
+}
+
+.app-shell--theme-light .wishlist-icon-option {
+  border-color: rgba(15, 23, 42, 0.16);
+  background: rgba(15, 23, 42, 0.04);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .wishlist-icon-option:hover {
+  border-color: rgba(79, 70, 229, 0.4);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.app-shell--theme-light .wishlist-icon-option.is-selected {
+  border-color: rgba(79, 70, 229, 0.55);
+  background: rgba(99, 102, 241, 0.16);
+}
+
+.app-shell--theme-light .privacy-settings-strip {
+  border-color: rgba(15, 23, 42, 0.19);
+  background: rgba(255, 255, 255, 0.85);
+  color: inherit;
+}
+
+.app-shell--theme-light .privacy-settings-strip-title {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .privacy-settings-strip-hint {
+  color: rgba(15, 23, 42, 0.52);
+}
+
+.app-shell--theme-light .wishlist-create-message--muted {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .create-wishlist-inline-link {
+  color: #4f46e5;
+}
+
+.app-shell--theme-light .create-gift-wishlist-list {
+  border-color: rgba(15, 23, 42, 0.14);
+  background: rgba(248, 250, 252, 0.95);
+  scrollbar-color: rgba(79, 70, 229, 0.45) rgba(15, 23, 42, 0.08);
+}
+
+.app-shell--theme-light .create-gift-wishlist-list::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .create-gift-wishlist-list::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.4);
+}
+
+.app-shell--theme-light .create-gift-wishlist-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.58);
+}
+
+.app-shell--theme-light .create-gift-checkbox-label {
+  color: #1e293b;
+  border-color: rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.app-shell--theme-light .create-gift-checkbox-label:hover {
+  border-color: rgba(79, 70, 229, 0.35);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.app-shell--theme-light .create-gift-checkbox-label:has(input:checked) {
+  border-color: rgba(79, 70, 229, 0.45);
+  background: rgba(99, 102, 241, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.15);
+}
+
+.app-shell--theme-light .create-gift-image-preview {
+  border-color: rgba(15, 23, 42, 0.16);
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.app-shell--theme-light .gift-details-back-link {
+  color: rgba(15, 23, 42, 0.48);
+}
+
+.app-shell--theme-light .gift-details-back-link:hover {
+  color: #4338ca;
+}
+
+.app-shell--theme-light .gift-details-card.profile-card {
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow:
+    0 20px 44px rgba(15, 23, 42, 0.08),
+    0 0 0 1px rgba(79, 70, 229, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-surface {
+  border-color: rgba(15, 23, 42, 0.11);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 250, 252, 0.92) 45%,
+    rgba(241, 245, 249, 0.88) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-hero {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-price {
+  color: #6d28d9;
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-link-out {
+  border-color: rgba(79, 70, 229, 0.38);
+  background: rgba(99, 102, 241, 0.1);
+  color: #4338ca;
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-link-out:hover {
+  border-color: rgba(67, 56, 202, 0.55);
+  background: rgba(99, 102, 241, 0.16);
+  color: #312e81;
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-description {
+  color: rgba(15, 23, 42, 0.78);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-lists-wrap {
+  border-top-color: rgba(15, 23, 42, 0.1);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-lists-label {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-lists {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.app-shell--theme-light .gift-details-siblings {
+  border-color: rgba(15, 23, 42, 0.11);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .gift-details-siblings-heading {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.app-shell--theme-light .gift-details-siblings-hint {
+  color: rgba(15, 23, 42, 0.48);
+}
+
+.app-shell--theme-light .gift-details-sibling-card {
+  border-color: rgba(15, 23, 42, 0.1);
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.app-shell--theme-light .gift-details-sibling-card:hover {
+  border-color: rgba(79, 70, 229, 0.35);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.app-shell--theme-light .gift-details-sibling-thumb {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .gift-details-sibling-title {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .gift-details-sibling-price {
+  color: #6d28d9;
+}
+
+.app-shell--theme-light .auth-modal-backdrop {
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.app-shell--theme-light .auth-modal {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.12);
+}
+
+.app-shell--theme-light .auth-title {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .auth-close-button {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.app-shell--theme-light .auth-switch-text {
+  color: rgba(15, 23, 42, 0.62);
+}
+
+.app-shell--theme-light .auth-switch-link {
+  color: #4f46e5;
+}
+
+.app-shell--theme-light .auth-forgot-link {
+  color: #4338ca;
+}
+
+.app-shell--theme-light .auth-forgot-link:hover {
+  color: #312e81;
+}
+
+.app-shell--theme-light .auth-form label {
+  color: rgba(15, 23, 42, 0.88);
+}
+
+.app-shell--theme-light .auth-form input {
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.app-shell--theme-light .auth-password-toggle {
+  color: rgba(15, 23, 42, 0.52);
+}
+
+.app-shell--theme-light .auth-password-toggle:hover {
+  color: rgba(15, 23, 42, 0.82);
+}
+
+.app-shell--theme-light .auth-form .event-date-picker__trigger {
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.app-shell--theme-light .auth-form .event-date-picker__trigger:hover:not(:disabled) {
+  border-color: rgba(15, 23, 42, 0.3);
+  background: #f1f5f9;
+}
+
+.app-shell--theme-light .auth-form .event-date-picker__trigger:focus-visible {
+  border-color: rgba(79, 70, 229, 0.5);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.16);
+}
+
+.app-shell--theme-light .auth-form .event-date-picker__trigger-icon {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .auth-form .event-date-picker__trigger-text {
+  color: #1e293b;
+}
+
+.app-shell--theme-light .auth-form .event-date-picker__chevron {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.app-shell--theme-light .auth-form .primary-btn {
+  background: #e2e8f0;
+  border-color: rgba(15, 23, 42, 0.24);
+  color: #0f172a;
+}
+
+.app-shell--theme-light .auth-form-message {
+  border-color: rgba(185, 28, 28, 0.35);
+  background: rgba(254, 226, 226, 0.8);
+  color: #7f1d1d;
+}
+
+.app-shell--theme-light .delete-wishlist-modal.auth-modal {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.12);
+}
+
+.app-shell--theme-light .delete-wishlist-modal__close {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.app-shell--theme-light .delete-wishlist-modal__close:hover {
+  color: #0f172a;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .delete-wishlist-modal__title {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .delete-wishlist-modal__text {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.app-shell--theme-light .delete-wishlist-modal .action-btn.delete-wishlist-modal__btn-cancel {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .delete-wishlist-modal .action-btn.delete-wishlist-modal__btn-cancel:hover:not(:disabled) {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.28);
+}
+
+.app-shell--theme-light .delete-wishlist-modal__error {
+  color: #b91c1c;
+}
+
+.app-shell--theme-light .event-date-picker__trigger {
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(15, 23, 42, 0.22);
+}
+
+.app-shell--theme-light .event-date-picker__trigger:hover:not(:disabled) {
+  border-color: rgba(79, 70, 229, 0.45);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.app-shell--theme-light .event-date-picker__trigger:focus-visible {
+  border-color: rgba(79, 70, 229, 0.55);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.app-shell--theme-light .event-date-picker__trigger-icon {
+  color: #4f46e5;
+}
+
+.app-shell--theme-light .event-date-picker__trigger-text {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .event-date-picker__chevron {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.app-shell--theme-light .event-date-picker__popover {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.19);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.14);
+}
+
+.app-shell--theme-light .event-date-picker__rdp {
+  color: #1e293b;
+  --rdp-accent-color: #4f46e5;
+  --rdp-accent-background-color: rgba(99, 102, 241, 0.18);
+}
+
+.app-shell--theme-light .event-date-picker__rdp .rdp-dropdown_root select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: #f1f5f9;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.25 6 8l4-3.75' fill='none' stroke='%23475569' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.45rem center;
+  background-size: 0.8rem;
+  color: #1e293b;
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  padding-right: 1.45rem;
+}
+
+.app-shell--theme-light .event-date-picker__rdp .rdp-caption_label {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .event-date-picker__rdp .rdp-weekday {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.app-shell--theme-light .event-date-picker__rdp .rdp-nav_button {
+  color: rgba(15, 23, 42, 0.7);
+}
+
+.app-shell--theme-light .event-date-picker__rdp .rdp-nav_button:hover {
+  background: rgba(15, 23, 42, 0.06);
+  color: #0f172a;
+}
+
+.app-shell--theme-light .event-date-picker__clear {
+  color: rgba(15, 23, 42, 0.5);
+  border-top-color: rgba(15, 23, 42, 0.13);
+}
+
+.app-shell--theme-light .event-date-picker__clear:hover {
+  color: #b91c1c;
+}

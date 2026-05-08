@@ -11,7 +11,7 @@
   padding: 1rem;
 }
 
-/* Вложенная карточка (напр. гость на «Новый вишлист») — без второго слоя «стекла» */
+/* Вложенная карточка (напр. гость на «Новый список желаний») — без второго слоя «стекла» */
 .profile-card .profile-card {
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
@@ -38,7 +38,36 @@
   align-items: flex-start;
 }
 
+.profile-main-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-description-line {
+  margin: 0.3rem 0 0;
+  color: rgba(255, 255, 255, 0.75);
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.profile-description-prefix {
+  font-weight: 500;
+}
+
+.profile-description-text {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.profile-description-input {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .profile-avatar-wrap {
+  flex-shrink: 0;
   width: 108px;
   height: 108px;
   border-radius: 999px;
@@ -65,9 +94,11 @@
 .profile-main-info h1 {
   margin: 0;
   font-size: 1.35rem;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-.profile-main-info p {
+.profile-main-info p:not(.profile-description-line) {
   margin: 0.3rem 0 0;
   color: rgba(255, 255, 255, 0.75);
 }
@@ -81,15 +112,14 @@
 }
 
 .profile-id-label {
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: rgba(255, 255, 255, 0.45);
 }
 
 .profile-id-value {
-  font-size: 0.78rem;
-  font-family: ui-monospace, monospace;
+  font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -108,7 +138,7 @@
 }
 
 .profile-id-copied-hint {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   color: #86efac;
   white-space: nowrap;
 }
@@ -121,6 +151,12 @@
   margin-top: 1.25rem;
   display: flex;
   justify-content: flex-end;
+}
+
+.profile-logout-row .action-btn {
+  padding: 0.56rem 0.92rem;
+  font-size: 0.92rem;
+  font-weight: 500;
 }
 
 .profile-form-actions {
@@ -153,4 +189,70 @@
 .profile-message {
   margin-top: 0.75rem;
   color: #c4b5fd;
+}
+
+.dots-menu-theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 8px;
+  cursor: default;
+  user-select: none;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.dots-menu-theme-row__label {
+  font: inherit;
+  font-size: 0.9375rem;
+  color: #e5e7eb;
+  min-width: 0;
+  flex: 1;
+  line-height: 1.25;
+}
+
+.dots-menu-theme-toggle {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1.75rem;
+  height: 0.9375rem;
+  min-width: 1.75rem;
+  min-height: 0.9375rem;
+  max-width: 1.75rem;
+  max-height: 0.9375rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.dots-menu-theme-toggle[aria-checked='true'] {
+  background: rgba(99, 102, 241, 0.55);
+  border-color: rgba(129, 140, 248, 0.65);
+}
+
+.dots-menu-theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: #f8fafc;
+  transition: transform 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.dots-menu-theme-toggle[aria-checked='true']::after {
+  transform: translateX(calc(1.75rem - 0.625rem - 4px));
 }
