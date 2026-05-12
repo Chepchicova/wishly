@@ -58,15 +58,70 @@
   border-radius: 6px;
 }
 
+.site-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  justify-self: end;
+  line-height: 1;
+  overflow: visible;
+}
+
+.header-notifications-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Совпадает с высотой svg в профиле — строка хедера не растягивается */
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  overflow: visible;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.header-notifications-btn:hover {
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.header-notifications-btn:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.7);
+  outline-offset: 2px;
+}
+
+.header-notifications-btn__icon {
+  /* Как svg профиля width={22} height={22} */
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .profile-block {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   color: rgba(255, 255, 255, 0.55);
   text-decoration: none;
-  justify-self: end;
   font-size: 0.9375rem;
   font-weight: 500;
+  line-height: 1;
   transition: color 0.15s ease;
 }
 
@@ -76,6 +131,7 @@
   border-radius: 10px;
   padding: 0.35rem 0.75rem;
   cursor: pointer;
+  justify-self: end;
 }
 
 .nav-link--active {
@@ -110,7 +166,8 @@
 
   .logo,
   .header-nav,
-  .profile-block {
+  .site-header-actions,
+  .auth-open-button {
     justify-self: center;
   }
 

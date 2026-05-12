@@ -1,0 +1,727 @@
+.friends-page {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.friends-panel {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  gap: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.9rem;
+  min-height: 560px;
+}
+
+.friends-sidebar,
+.friends-content {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.friends-sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0.5rem;
+}
+
+.friends-sidebar-tabs {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.friends-sidebar-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(226, 232, 240, 0.85);
+  border-radius: 10px;
+  padding: 0.48rem 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  line-height: 1.2;
+}
+
+.friends-sidebar-tab:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.friends-sidebar-tab.is-active {
+  border-color: rgba(129, 140, 248, 0.55);
+  background: rgba(99, 102, 241, 0.2);
+  color: #f8fafc;
+}
+
+.friends-sidebar-tab-label {
+  min-width: 0;
+}
+
+.friends-sidebar-tab-badge {
+  flex-shrink: 0;
+  min-width: 1.15rem;
+  padding: 0.12rem 0.38rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: rgba(220, 38, 38, 0.85);
+  color: #fff;
+  line-height: 1.2;
+}
+
+.friends-sidebar-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  margin-top: 0.55rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.friends-sidebar-panel .friends-list {
+  margin-top: 0;
+}
+
+.friends-requests-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.friend-add-hint {
+  margin: 0 0 0.55rem;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.friend-add-find-message {
+  margin-top: 0.5rem;
+}
+
+.friends-content-hint {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.friends-content-hint-text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: rgba(226, 232, 240, 0.78);
+}
+
+.friends-list {
+  margin-top: 0.7rem;
+  display: grid;
+  gap: 0.55rem;
+  align-content: start;
+}
+
+.friend-chip {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: #e5e7eb;
+  border-radius: 10px;
+  padding: 0.62rem 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.friend-chip.is-selected {
+  border-color: rgba(129, 140, 248, 0.62);
+  background: rgba(99, 102, 241, 0.16);
+}
+
+.friend-chip-avatar,
+.friend-profile-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(129, 140, 248, 0.26);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f8fafc;
+  font-weight: 700;
+  text-transform: uppercase;
+  overflow: hidden;
+}
+
+.friend-chip-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.friend-chip-avatar img,
+.friend-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.friends-content {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.friend-add-card,
+.friend-profile-card {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 0.7rem 0.8rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.friend-profile-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.friend-profile-card--with-menu {
+  position: relative;
+  padding-right: 3rem;
+}
+
+.friend-profile-menu-anchor {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 2;
+}
+
+.friend-profile-menu-anchor .dots-btn {
+  width: 2.1rem;
+  height: 2rem;
+}
+
+.friend-profile-menu-anchor .dots-menu {
+  min-width: max-content;
+}
+
+.dots-menu .dots-menu-item-danger {
+  color: #fecaca;
+  white-space: nowrap;
+}
+
+.dots-menu .dots-menu-item-danger:hover {
+  background: rgba(220, 38, 38, 0.2);
+  color: #fff;
+}
+
+.friend-add-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.friend-add-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.friend-add-controls input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #e5e7eb;
+  padding: 0.58rem 0.65rem;
+}
+
+/* как у кнопки «Новый список желаний» в шапке списков (.wishlists-head .action-btn.primary-btn) */
+.friend-add-controls .action-btn.primary-btn {
+  flex-shrink: 0;
+  padding: 0.56rem 0.88rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.friend-incoming-card {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 0.7rem 0.8rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.friend-incoming-card h2 {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+}
+
+.friend-incoming-status {
+  margin: 0;
+}
+
+.friend-incoming-error {
+  margin: 0.55rem 0 0;
+  color: #fca5a5;
+}
+
+.friend-incoming-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.friend-incoming-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transition:
+    background-color 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.friend-incoming-row:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(165, 180, 252, 0.14);
+}
+
+.friend-incoming-row-hit {
+  flex: 1 1 10rem;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.friend-incoming-row-hit:focus-visible {
+  outline: 2px solid rgba(165, 180, 252, 0.9);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.friend-incoming-user {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.friend-incoming-avatar {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  background: rgba(129, 140, 248, 0.26);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #f8fafc;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.friend-incoming-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.friend-incoming-meta {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.friend-incoming-meta small {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.friend-incoming-profile-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.42rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid rgba(147, 197, 253, 0.45);
+  color: #bfdbfe;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.friend-incoming-profile-link:hover {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(147, 197, 253, 0.65);
+  color: #e0f2fe;
+}
+
+.friends-content .friends-preview-error {
+  margin: 0;
+  color: #fca5a5;
+}
+
+.friend-incoming-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-self: center;
+  gap: 0.45rem;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.friend-incoming-actions .action-btn {
+  padding: 0.48rem 0.72rem;
+  font-size: 0.83rem;
+  font-weight: 600;
+  min-width: 5.5rem;
+}
+
+.friend-incoming-btn-accept {
+  background: rgba(22, 163, 74, 0.26) !important;
+  border-color: rgba(74, 222, 128, 0.48) !important;
+  color: #ecfdf5 !important;
+}
+
+.friend-incoming-btn-accept:hover:not(:disabled) {
+  background: rgba(22, 163, 74, 0.38) !important;
+  border-color: rgba(134, 239, 172, 0.55) !important;
+}
+
+.friend-incoming-btn-decline {
+  background: rgba(220, 38, 38, 0.22) !important;
+  border-color: rgba(248, 113, 113, 0.45) !important;
+  color: #fef2f2 !important;
+}
+
+.friend-incoming-btn-decline:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.34) !important;
+  border-color: rgba(252, 165, 165, 0.55) !important;
+}
+
+.found-user-card {
+  margin-top: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.3rem;
+  overflow: hidden;
+  transition:
+    background-color 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.found-user-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(165, 180, 252, 0.12);
+}
+
+.found-user-hit {
+  flex: 0 0 auto;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.found-user-hit:focus-visible {
+  outline: 2px solid rgba(165, 180, 252, 0.9);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.found-user-main {
+  min-width: 0;
+  display: grid;
+  gap: 0.1rem;
+}
+
+.found-user-main small {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.found-user-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.45rem;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.found-user-actions .action-btn {
+  padding: 0.48rem 0.72rem;
+  font-size: 0.83rem;
+  font-weight: 600;
+  min-width: 5.5rem;
+}
+
+.found-user-status {
+  margin: 0;
+  max-width: 14rem;
+  text-align: left;
+}
+
+.friend-found-btn-cancel-request {
+  background: rgba(220, 38, 38, 0.22) !important;
+  border-color: rgba(248, 113, 113, 0.45) !important;
+  color: #fef2f2 !important;
+}
+
+.friend-found-btn-cancel-request:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.34) !important;
+  border-color: rgba(252, 165, 165, 0.55) !important;
+}
+
+.friend-profile-main {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.friend-profile-avatar {
+  width: clamp(7.25rem, 26vw, 11rem);
+  height: clamp(7.25rem, 26vw, 11rem);
+  font-size: clamp(1.75rem, 7vw, 2.75rem);
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-sizing: border-box;
+}
+
+.friend-profile-main h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.friend-profile-main .profile-birthday-line {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.friend-wishlists-block {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 0.75rem 0.85rem;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.friend-wishlists-title {
+  margin: 0 0 0.65rem;
+  font-size: 1.02rem;
+  font-weight: 650;
+  color: #f1f5f9;
+}
+
+.friend-wishlists-status {
+  margin: 0;
+}
+
+.friend-wishlists-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.friend-wishlist-preview-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1rem 1rem 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.friend-wishlist-preview-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.friend-wishlist-preview-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  display: block;
+}
+
+.friend-wishlist-preview-titles {
+  min-width: 0;
+  flex: 1;
+}
+
+.friend-wishlist-preview-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e5e7eb;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.friend-wishlist-preview-count {
+  margin: 0.2rem 0 0;
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.friend-wishlist-preview-thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+.friend-wishlist-preview-thumbs--empty {
+  min-height: 4.5rem;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+}
+
+.friend-wishlist-preview-empty-note {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.58);
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.friend-wishlist-preview-thumb {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  display: block;
+  outline: none;
+  transition: opacity 0.12s ease;
+}
+
+.friend-wishlist-preview-thumb:hover {
+  opacity: 0.92;
+}
+
+.friend-wishlist-preview-thumb:focus-visible {
+  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.6);
+}
+
+.friend-wishlist-preview-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.friend-wishlist-open-detail {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-bottom: 0.65rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  text-decoration: none;
+}
+
+.friend-wishlist-open-detail:hover {
+  color: #c7d2fe;
+  text-decoration: underline;
+}
+
+.friend-wishlist-preview-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.15rem;
+}
+
+.friend-wishlist-preview-date {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.friend-wishlist-preview-foot-spacer {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.friend-wishlist-preview-badge {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fff;
+  background: #ea580c;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .friends-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .friend-wishlists-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .friend-add-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -169,6 +169,11 @@ export default function WishlistsPage({
                         href={`/wishlists/gifts/${giftId}?list=${selectedWishlist.id}`}
                         key={wish.id}
                       >
+                        {wish.reservationLabel ? (
+                          <span className="wish-card__reserved-badge" title={wish.reservationLabel}>
+                            {wish.reservationLabel}
+                          </span>
+                        ) : null}
                         <article className="wish-card__inner">
                           <div className="wish-card__image-wrap">
                             <img

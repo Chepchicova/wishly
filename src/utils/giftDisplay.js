@@ -17,6 +17,21 @@ export function resolveGiftImageUrl(imagePath) {
   return `${API_BASE_URL}/${path}`;
 }
 
+/** Путь аватара из API (например /uploads/...) — полный URL для <img>, иначе null */
+export function resolveUserAvatarUrl(avatarPath) {
+  if (!avatarPath || !String(avatarPath).trim()) {
+    return null;
+  }
+  const path = String(avatarPath).trim();
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
+  if (path.startsWith('/')) {
+    return `${API_BASE_URL}${path}`;
+  }
+  return `${API_BASE_URL}/${path}`;
+}
+
 export function formatGiftLinkLabel(rawUrl) {
   const url = String(rawUrl || '').trim();
   if (!url) {

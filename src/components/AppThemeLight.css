@@ -61,6 +61,16 @@
   color: #0f172a;
 }
 
+.app-shell--theme-light .header-notifications-btn {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .header-notifications-btn:hover {
+  color: #0f172a;
+  background: rgba(15, 23, 42, 0.06);
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.1);
+}
+
 .app-shell--theme-light .auth-open-button {
   border: 1px solid rgba(15, 23, 42, 0.19);
   background: rgba(255, 255, 255, 0.95);
@@ -222,8 +232,437 @@
   color: rgba(15, 23, 42, 0.58);
 }
 
+.app-shell--theme-light .wishlists-page .wish-card__reserved-badge {
+  color: #ffffff;
+  background: #15803d;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18);
+}
+
 .app-shell--theme-light .wishlists-page .wish-card__price {
   color: #5b21b6;
+}
+
+/* Просмотр списка желаний друга (/friends/wishlists/…) — те же акценты, что у «Мои списки» */
+.app-shell--theme-light .friend-wishlist-detail-page .friend-wl-detail-card.profile-card {
+  border-color: rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow:
+    0 20px 44px rgba(15, 23, 42, 0.08),
+    0 0 0 1px rgba(79, 70, 229, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .friend-wl-detail-head.wishlist-content-head {
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 12px;
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .content-main-meta h2 {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .content-main-meta p {
+  color: rgba(15, 23, 42, 0.65);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .event-date {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wishlists-title {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wishlists-subtitle {
+  color: rgba(15, 23, 42, 0.62);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wishes-grid .empty-note {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wish-card {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wish-card-link:hover {
+  border-color: rgba(79, 70, 229, 0.38);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wish-card__image-wrap {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wish-card__title {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wish-card__desc {
+  color: rgba(15, 23, 42, 0.58);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wish-card__reserved-badge {
+  color: #ffffff;
+  background: #15803d;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .wish-card__price {
+  color: #5b21b6;
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .friend-wl-detail-owner-line {
+  color: rgba(15, 23, 42, 0.58);
+}
+
+.app-shell--theme-light .friend-wishlist-detail-page .friend-wl-detail-owner-label {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+/* Страница «Друзья» */
+.app-shell--theme-light .friends-page .friends-panel {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.app-shell--theme-light .friends-page .friends-sidebar-tab {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.75);
+  color: rgba(15, 23, 42, 0.75);
+}
+
+.app-shell--theme-light .friends-page .friends-sidebar-tab:hover {
+  border-color: rgba(15, 23, 42, 0.22);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.app-shell--theme-light .friends-page .friends-sidebar-tab.is-active {
+  border-color: rgba(79, 70, 229, 0.45);
+  background: rgba(99, 102, 241, 0.12);
+  color: #1e1b4b;
+}
+
+.app-shell--theme-light .friends-page .friends-content-hint {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.app-shell--theme-light .friends-page .friends-content-hint-text {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.app-shell--theme-light .friends-page .friend-add-hint {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-profile-link {
+  border-color: rgba(59, 130, 246, 0.45);
+  color: #1d4ed8;
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-profile-link:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: #1e40af;
+}
+
+.app-shell--theme-light .friends-page .friends-preview-error {
+  color: #b91c1c;
+}
+
+.app-shell--theme-light .friends-page .friend-chip {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.75);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .friends-page .friend-chip.is-selected {
+  border-color: rgba(79, 70, 229, 0.45);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.app-shell--theme-light .friends-page .chip-meta strong {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friends-page .chip-meta small {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .friends-page .friend-chip-avatar,
+.app-shell--theme-light .friends-page .friend-profile-avatar {
+  background: rgba(99, 102, 241, 0.18);
+  color: #312e81;
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-card,
+.app-shell--theme-light .friends-page .friend-add-card,
+.app-shell--theme-light .friends-page .friend-profile-card {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-card h2,
+.app-shell--theme-light .friends-page .friend-add-card h2 {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friends-page .friend-add-controls input {
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .friends-page .friend-wishlists-block {
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.app-shell--theme-light .friends-page .friend-wishlists-title {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friends-page .friend-wishlist-preview-card {
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .friends-page .friend-wishlist-preview-name {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friends-page .friend-wishlist-preview-count {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.app-shell--theme-light .friends-page .friend-wishlist-preview-thumbs--empty {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.app-shell--theme-light .friends-page .friend-wishlist-preview-empty-note {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.app-shell--theme-light .friends-page .friend-wishlist-preview-thumb {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .friends-page .friend-wishlist-preview-date {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.app-shell--theme-light .friends-page .friend-wishlist-open-detail {
+  color: #4f46e5;
+}
+
+.app-shell--theme-light .friends-page .friend-wishlist-open-detail:hover {
+  color: #4338ca;
+}
+
+/* Страница «Подарки друзьям» (/gifts) — светлая тема */
+.app-shell--theme-light .gifts-to-friends-page {
+  max-width: 800px;
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-panel,
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-panel.glass-bar {
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 12px 40px rgba(15, 23, 42, 0.07);
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-list {
+  gap: 0.65rem;
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-row {
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(248, 250, 252, 0.98);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-row:hover {
+  background: #ffffff;
+  border-color: rgba(79, 70, 229, 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgba(99, 102, 241, 0.1),
+    0 6px 20px rgba(15, 23, 42, 0.07);
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-row:focus-visible {
+  outline-color: rgba(79, 70, 229, 0.75);
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-thumb {
+  background: rgba(15, 23, 42, 0.05);
+  box-shadow:
+    0 0 0 1px rgba(15, 23, 42, 0.08) inset,
+    0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-title {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-meta {
+  color: rgba(15, 23, 42, 0.52);
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-badge {
+  background: rgba(79, 70, 229, 0.12);
+  border: 1px solid rgba(79, 70, 229, 0.32);
+  color: #4338ca;
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-badge--fulfilled {
+  background: rgba(22, 163, 74, 0.12);
+  border: 1px solid rgba(22, 163, 74, 0.38);
+  color: #15803d;
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-empty,
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-status {
+  color: rgba(15, 23, 42, 0.55);
+  max-width: 38rem;
+}
+
+.app-shell--theme-light .gifts-to-friends-page .gifts-to-friends-error {
+  color: #b91c1c;
+  background: rgba(220, 38, 38, 0.06);
+  border: 1px solid rgba(220, 38, 38, 0.18);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.app-shell--theme-light .gifts-to-friends-page .empty-note {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-row {
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(248, 250, 252, 0.9);
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-row:hover {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(79, 70, 229, 0.22);
+  box-shadow:
+    inset 0 0 0 1px rgba(99, 102, 241, 0.12),
+    0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-row-hit:focus-visible {
+  outline-color: rgba(79, 70, 229, 0.75);
+}
+
+.app-shell--theme-light .friends-page .dots-menu .dots-menu-item-danger {
+  color: #b91c1c;
+}
+
+.app-shell--theme-light .friends-page .dots-menu .dots-menu-item-danger:hover {
+  background: rgba(220, 38, 38, 0.12);
+  color: #7f1d1d;
+}
+
+.app-shell--theme-light .gift-details-page .dots-menu .dots-menu-item-danger {
+  color: #b91c1c;
+}
+
+.app-shell--theme-light .gift-details-page .dots-menu .dots-menu-item-danger:hover {
+  background: rgba(220, 38, 38, 0.12);
+  color: #7f1d1d;
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-meta strong {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-meta small {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-btn-accept {
+  background: rgba(22, 163, 74, 0.14) !important;
+  border-color: rgba(21, 128, 61, 0.42) !important;
+  color: #14532d !important;
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-btn-accept:hover:not(:disabled) {
+  background: rgba(22, 163, 74, 0.22) !important;
+  border-color: rgba(21, 128, 61, 0.52) !important;
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-btn-decline {
+  background: rgba(220, 38, 38, 0.12) !important;
+  border-color: rgba(185, 28, 28, 0.42) !important;
+  color: #7f1d1d !important;
+}
+
+.app-shell--theme-light .friends-page .friend-incoming-btn-decline:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.2) !important;
+  border-color: rgba(185, 28, 28, 0.52) !important;
+}
+
+.app-shell--theme-light .friends-page .found-user-card {
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(248, 250, 252, 0.95);
+}
+
+.app-shell--theme-light .friends-page .found-user-card:hover {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(79, 70, 229, 0.22);
+  box-shadow:
+    inset 0 0 0 1px rgba(99, 102, 241, 0.1),
+    0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.app-shell--theme-light .friends-page .found-user-hit:focus-visible {
+  outline-color: rgba(79, 70, 229, 0.75);
+}
+
+.app-shell--theme-light .friends-page .friend-found-btn-cancel-request {
+  background: rgba(220, 38, 38, 0.12) !important;
+  border-color: rgba(185, 28, 28, 0.42) !important;
+  color: #7f1d1d !important;
+}
+
+.app-shell--theme-light .friends-page .friend-found-btn-cancel-request:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.2) !important;
+  border-color: rgba(185, 28, 28, 0.52) !important;
+}
+
+.app-shell--theme-light .friends-page .found-user-main strong {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friends-page .found-user-main small {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.app-shell--theme-light .friends-page .friend-profile-head h3 {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friends-page .friend-profile-head p {
+  color: rgba(15, 23, 42, 0.58);
+}
+
+.app-shell--theme-light .friends-page .friend-profile-body p {
+  color: rgba(15, 23, 42, 0.75);
+}
+
+.app-shell--theme-light .friends-page .friend-profile-body strong {
+  color: #0f172a;
+}
+
+.app-shell--theme-light .friends-page .empty-note {
+  color: rgba(15, 23, 42, 0.55);
 }
 
 .app-shell--theme-light .profile-card {
@@ -252,6 +691,10 @@
 
 /* Выше по каскаду ProfilePage.css задаёт светлый цвет для p — дата рождения должна читаться в светлой теме */
 .app-shell--theme-light .profile-main-info p.profile-birthday-line {
+  color: rgba(15, 23, 42, 0.82);
+}
+
+.app-shell--theme-light .friends-page .friend-profile-main .profile-birthday-line {
   color: rgba(15, 23, 42, 0.82);
 }
 
@@ -361,17 +804,11 @@
   background: rgba(99, 102, 241, 0.16);
 }
 
-.app-shell--theme-light .privacy-settings-strip {
-  border-color: rgba(15, 23, 42, 0.19);
-  background: rgba(255, 255, 255, 0.85);
-  color: inherit;
-}
-
-.app-shell--theme-light .privacy-settings-strip-title {
+.app-shell--theme-light .wishlist-privacy-row-label {
   color: #0f172a;
 }
 
-.app-shell--theme-light .privacy-settings-strip-hint {
+.app-shell--theme-light .wishlist-privacy-row-hint {
   color: rgba(15, 23, 42, 0.52);
 }
 
@@ -486,6 +923,31 @@
   color: rgba(15, 23, 42, 0.72);
 }
 
+.app-shell--theme-light .gift-details-page .gift-details-reserve-block {
+  border-top-color: rgba(15, 23, 42, 0.1);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-hint,
+.app-shell--theme-light .gift-details-page .gift-details-reserve-taken {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-taken {
+  color: #b45309;
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-notice {
+  border-color: rgba(15, 23, 42, 0.12);
+  background: rgba(248, 250, 252, 0.95);
+  color: rgba(15, 23, 42, 0.82);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-notice--fulfilled {
+  border-color: rgba(22, 163, 74, 0.38);
+  background: rgba(22, 163, 74, 0.1);
+  color: #14532d;
+}
+
 .app-shell--theme-light .gift-details-siblings {
   border-color: rgba(15, 23, 42, 0.11);
   background: rgba(255, 255, 255, 0.72);
@@ -518,8 +980,42 @@
   color: #0f172a;
 }
 
+.app-shell--theme-light .gift-details-sibling-reserved {
+  color: #b45309;
+}
+
 .app-shell--theme-light .gift-details-sibling-price {
   color: #6d28d9;
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-btn.action-btn.primary-btn {
+  background: rgba(22, 163, 74, 0.14);
+  border-color: rgba(21, 128, 61, 0.42);
+  color: #14532d;
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-btn.action-btn.primary-btn:hover:not(:disabled) {
+  background: rgba(22, 163, 74, 0.22);
+  border-color: rgba(21, 128, 61, 0.52);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-btn.action-btn.primary-btn:disabled {
+  opacity: 0.55;
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-btn--cancel.action-btn.primary-btn {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(185, 28, 28, 0.45);
+  color: #7f1d1d;
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-btn--cancel.action-btn.primary-btn:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.18);
+  border-color: rgba(185, 28, 28, 0.55);
+}
+
+.app-shell--theme-light .gift-details-page .gift-details-reserve-btn--cancel.action-btn.primary-btn:disabled {
+  opacity: 0.55;
 }
 
 .app-shell--theme-light .auth-modal-backdrop {
@@ -695,14 +1191,14 @@
 .app-shell--theme-light .event-date-picker__rdp .rdp-dropdown_root select {
   appearance: none;
   -webkit-appearance: none;
-  background: #f1f5f9;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.25 6 8l4-3.75' fill='none' stroke='%23475569' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-color: #f1f5f9;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.25 6 8l4-3.75' fill='none' stroke='%23475569' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.45rem center;
-  background-size: 0.8rem;
+  background-size: 1.25rem;
   color: #1e293b;
   border: 1px solid rgba(15, 23, 42, 0.22);
-  padding-right: 1.45rem;
+  padding-right: 2.1rem;
 }
 
 .app-shell--theme-light .event-date-picker__rdp .rdp-caption_label {

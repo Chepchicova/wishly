@@ -148,10 +148,20 @@
 .gift-details-page .gift-details-main {
   flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
   padding: 1rem 1.05rem 1.05rem;
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+}
+
+.gift-details-page .gift-details-main-grow {
+  min-width: 0;
+  min-height: 0;
+}
+
+.gift-details-page .gift-details-main-grow--fill {
+  flex: 1 1 auto;
 }
 
 .gift-details-page .gift-details-meta {
@@ -159,6 +169,11 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem 0.65rem;
+}
+
+.gift-details-page .gift-details-meta--footer {
+  flex-shrink: 0;
+  margin-top: auto;
 }
 
 .gift-details-page .gift-details-price {
@@ -336,8 +351,109 @@
   overflow: hidden;
 }
 
+.gift-details-sibling-reserved {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #fbbf24;
+}
+
 .gift-details-sibling-price {
   font-size: 0.78rem;
   font-weight: 600;
   color: #c4b5fd;
+}
+
+.gift-details-reserve-block {
+  margin-top: 1.25rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.gift-details-reserve-hint,
+.gift-details-reserve-taken {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: rgba(226, 232, 240, 0.88);
+}
+
+.gift-details-reserve-taken {
+  color: #fdba74;
+}
+
+.gift-details-reserve-notice {
+  margin: 0;
+  max-width: 32rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(241, 245, 249, 0.92);
+}
+
+.gift-details-reserve-notice--fulfilled {
+  border-color: rgba(74, 222, 128, 0.42);
+  background: rgba(22, 163, 74, 0.16);
+  color: #d1fae5;
+}
+
+/* Та же форма, что у primary-btn, но зелёный акцент вместо фиолетового */
+.gift-details-page .gift-details-reserve-btn.action-btn.primary-btn {
+  background: rgba(22, 163, 74, 0.26);
+  border-color: rgba(74, 222, 128, 0.48);
+  color: #ecfdf5;
+}
+
+.gift-details-page .gift-details-reserve-btn.action-btn.primary-btn:hover:not(:disabled) {
+  background: rgba(22, 163, 74, 0.36);
+  border-color: rgba(134, 239, 172, 0.55);
+}
+
+.gift-details-page .gift-details-reserve-btn.action-btn.primary-btn:disabled {
+  opacity: 0.55;
+}
+
+/* Отмена брони: тот же размер/форма, красный акцент */
+.gift-details-page .gift-details-reserve-btn--cancel.action-btn.primary-btn {
+  background: rgba(220, 38, 38, 0.28);
+  border-color: rgba(248, 113, 113, 0.52);
+  color: #fef2f2;
+}
+
+.gift-details-page .gift-details-reserve-btn--cancel.action-btn.primary-btn:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.4);
+  border-color: rgba(252, 165, 165, 0.6);
+}
+
+.gift-details-page .gift-details-reserve-btn--cancel.action-btn.primary-btn:disabled {
+  opacity: 0.55;
+}
+
+.gift-details-page .gift-details-head .dots-menu-wrap {
+  flex-shrink: 0;
+}
+
+.gift-details-page .dots-menu {
+  min-width: max-content;
+}
+
+.gift-details-page .dots-menu .dots-menu-item-danger {
+  color: #fecaca;
+  white-space: nowrap;
+}
+
+.gift-details-page .dots-menu .dots-menu-item-danger:hover {
+  background: rgba(220, 38, 38, 0.2);
+  color: #fff;
+}
+
+.gift-details-reserve-btn {
+  margin-top: 0.15rem;
 }

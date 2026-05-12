@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import CancelReservationConfirmModal from '../components/CancelReservationConfirmModal';
+import DeleteGiftConfirmModal from '../components/DeleteGiftConfirmModal';
+import ReportGiftModal from '../components/ReportGiftModal';
 import CreateGiftPage from './CreateGiftPage';
 import { formatGiftLinkLabel, formatGiftPrice, resolveGiftImageUrl } from '../utils/giftDisplay';
 import './GiftDetailsPage.css';
@@ -19,6 +22,18 @@ function GiftDetailsChrome({ backHref, main, aside }) {
       </div>
     </section>
   );
+}
+
+function buildGiftDetailsPath(giftIdStr, contextListId, giftQueryOwnerIdUser) {
+  const p = new URLSearchParams();
+  if (contextListId) {
+    p.set('list', String(contextListId));
+  }
+  if (giftQueryOwnerIdUser) {
+    p.set('owner', String(giftQueryOwnerIdUser));
+  }
+  const q = p.toString();
+  return `/wishlists/gifts/${giftIdStr}${q ? `?${q}` : ''}`;
 }
 
 export default function GiftDetailsPage({
@@ -42,18 +57,53 @@ export default function GiftDetailsPage({
   contextListMissing = false,
   siblingGifts = [],
   isWishlistsLoading = false,
+  isGiftReadOnly = false,
+  giftQueryOwnerIdUser = null,
+  giftReservation = null,
+  isGiftReserveSubmitting = false,
+  onReserveFriendGift,
+  onCancelFriendReservation,
+  onSubmitGiftReport,
+  isGiftReportSubmitting = false,
+  isLightTheme = false,
+  ownerGiftStatus = null,
+  onToggleOwnerGiftFulfillment,
+  isGiftFulfilledToggling = false,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isGiftMenuOpen, setIsGiftMenuOpen] = useState(false);
+  const [cancelReservationModalOpen, setCancelReservationModalOpen] = useState(false);
+  const [cancelReservationModalError, setCancelReservationModalError] = useState('');
+  const [reportGiftModalOpen, setReportGiftModalOpen] = useState(false);
+  const [reportGiftModalError, setReportGiftModalError] = useState('');
+  const [deleteGiftModalOpen, setDeleteGiftModalOpen] = useState(false);
+  const [deleteGiftModalError, setDeleteGiftModalError] = useState('');
   const giftDotsMenuRef = useRef(null);
   const editSnapshotRef = useRef(null);
 
-  const listQuery = contextListId ? `?list=${encodeURIComponent(String(contextListId))}` : '';
+  async function handleConfirmCancelReservation() {
+    if (!onCancelFriendReservation) {
+      return;
+    }
+    setCancelReservationModalError('');
+    const result = await onCancelFriendReservation();
+    if (result && result.ok) {
+      setCancelReservationModalOpen(false);
+    } else if (result && result.error) {
+      setCancelReservationModalError(result.error);
+    }
+  }
 
   useEffect(() => {
     setIsEditing(false);
     setIsGiftMenuOpen(false);
     editSnapshotRef.current = null;
+    setCancelReservationModalOpen(false);
+    setCancelReservationModalError('');
+    setReportGiftModalOpen(false);
+    setReportGiftModalError('');
+    setDeleteGiftModalOpen(false);
+    setDeleteGiftModalError('');
   }, [giftId]);
 
   useEffect(() => {
@@ -137,7 +187,7 @@ export default function GiftDetailsPage({
     );
   }
 
-  if (isEditing) {
+  if (isEditing && !isGiftReadOnly) {
     return (
       <>
         <section className="profile-page create-wishlist-page gift-details-page">
@@ -200,14 +250,18 @@ export default function GiftDetailsPage({
             {siblingGifts.map((s) => {
               const thumbSrc = resolveGiftImageUrl(s.imagePath);
               const sPrice = formatGiftPrice(s.price);
+              const sHref = buildGiftDetailsPath(s.giftId, contextListId, giftQueryOwnerIdUser);
               return (
                 <li key={s.giftId}>
-                  <a className="gift-details-sibling-card" href={`/wishlists/gifts/${s.giftId}${listQuery}`}>
+                  <a className="gift-details-sibling-card" href={sHref}>
                     <div className="gift-details-sibling-thumb">
                       <img src={thumbSrc} alt="" loading="lazy" />
                     </div>
                     <div className="gift-details-sibling-body">
                       <span className="gift-details-sibling-title">{s.title}</span>
+                      {s.reservationLabel ? (
+                        <span className="gift-details-sibling-reserved">{s.reservationLabel}</span>
+                      ) : null}
                       {sPrice ? <span className="gift-details-sibling-price">{sPrice}</span> : null}
                     </div>
                   </a>
@@ -222,40 +276,90 @@ export default function GiftDetailsPage({
     );
   }
 
+  const res = giftReservation;
+  const reserveStatus = res && typeof res.status === 'string' ? res.status : '';
+  const showFriendReserve = Boolean(isGiftReadOnly && !loadFailed);
   const mainCard = (
     <div className="profile-card create-wishlist-inner glass-bar gift-details-card">
       <header className="gift-details-head">
         <div className="gift-details-head-text">
           <h1 className="wishlists-title gift-details-title">{createGiftForm.title}</h1>
         </div>
-        <div className="dots-menu-wrap" ref={giftDotsMenuRef}>
-          <button
-            type="button"
-            className="dots-btn"
-            aria-label="Действия с подарком"
-            aria-expanded={isGiftMenuOpen}
-            onClick={() => setIsGiftMenuOpen((open) => !open)}
-          >
-            ...
-          </button>
-          {isGiftMenuOpen ? (
-            <div className="dots-menu" role="menu">
-              <button type="button" role="menuitem" onClick={handleStartEdit}>
-                Редактировать
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => {
-                  setIsGiftMenuOpen(false);
-                  onDeleteGift();
-                }}
-              >
-                Удалить
-              </button>
-            </div>
-          ) : null}
-        </div>
+        {!isGiftReadOnly ? (
+          <div className="dots-menu-wrap" ref={giftDotsMenuRef}>
+            <button
+              type="button"
+              className="dots-btn"
+              aria-label="Действия с подарком"
+              aria-expanded={isGiftMenuOpen}
+              onClick={() => setIsGiftMenuOpen((open) => !open)}
+            >
+              ...
+            </button>
+            {isGiftMenuOpen ? (
+              <div className="dots-menu" role="menu">
+                <button type="button" role="menuitem" onClick={handleStartEdit}>
+                  Редактировать
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  disabled={
+                    isGiftFulfilledToggling || ownerGiftStatus == null || isCreateGiftSubmitting
+                  }
+                  onClick={() => {
+                    if (onToggleOwnerGiftFulfillment) {
+                      void onToggleOwnerGiftFulfillment();
+                    }
+                  }}
+                >
+                  {(ownerGiftStatus ?? 'free') === 'gifted'
+                    ? '✗ Желание не исполнено'
+                    : '✓ Желание исполнено'}
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setIsGiftMenuOpen(false);
+                    setDeleteGiftModalError('');
+                    setDeleteGiftModalOpen(true);
+                  }}
+                >
+                  Удалить
+                </button>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div className="dots-menu-wrap" ref={giftDotsMenuRef}>
+            <button
+              type="button"
+              className="dots-btn"
+              aria-label="Действия"
+              aria-expanded={isGiftMenuOpen}
+              onClick={() => setIsGiftMenuOpen((open) => !open)}
+            >
+              ...
+            </button>
+            {isGiftMenuOpen ? (
+              <div className="dots-menu" role="menu">
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="dots-menu-item-danger"
+                  onClick={() => {
+                    setIsGiftMenuOpen(false);
+                    setReportGiftModalError('');
+                    setReportGiftModalOpen(true);
+                  }}
+                >
+                  Пожаловаться
+                </button>
+              </div>
+            ) : null}
+          </div>
+        )}
       </header>
 
       <div className="gift-details-body">
@@ -264,12 +368,16 @@ export default function GiftDetailsPage({
             <img src={imageSrc} alt="" className="gift-details-hero-img" loading="lazy" />
           </div>
           <div className="gift-details-main">
-            {createGiftForm.description ? (
-              <p className="gift-details-description">{createGiftForm.description}</p>
-            ) : null}
+            <div
+              className={`gift-details-main-grow${hasMeta ? ' gift-details-main-grow--fill' : ''}`}
+            >
+              {createGiftForm.description ? (
+                <p className="gift-details-description">{createGiftForm.description}</p>
+              ) : null}
+            </div>
 
             {hasMeta ? (
-              <div className="gift-details-meta">
+              <div className="gift-details-meta gift-details-meta--footer">
                 {priceLabel ? <span className="gift-details-price">{priceLabel}</span> : null}
                 {linkHref ? (
                   <a
@@ -291,6 +399,59 @@ export default function GiftDetailsPage({
               <span className="gift-details-lists-label">В списках</span>
               <p className="gift-details-lists">{listsLine}</p>
             </div>
+
+            {showFriendReserve ? (
+              <div className="gift-details-reserve-block">
+                {!res ? (
+                  <p className="gift-details-reserve-hint" role="status">
+                    Не удалось получить статус бронирования. Откройте подарок по ссылке с параметром{' '}
+                    <strong>?owner=…</strong> (ID друга-владельца).
+                  </p>
+                ) : null}
+                {res && reserveStatus === 'gifted' ? (
+                  <p
+                    className="gift-details-reserve-notice gift-details-reserve-notice--fulfilled"
+                    role="status"
+                  >
+                    Друг уже закрыл это желание в своём списке — подарок состоялся. Спасибо, если вы к этому
+                    причастны.
+                  </p>
+                ) : null}
+                {res && reserveStatus !== 'gifted' && res.reservedByMe ? (
+                  <button
+                    type="button"
+                    className="action-btn primary-btn gift-details-reserve-btn gift-details-reserve-btn--cancel"
+                    onClick={() => {
+                      setCancelReservationModalError('');
+                      setCancelReservationModalOpen(true);
+                    }}
+                    disabled={isGiftReserveSubmitting}
+                  >
+                    Отменить бронь
+                  </button>
+                ) : null}
+                {res && reserveStatus !== 'gifted' && res.isReserved && !res.reservedByMe ? (
+                  <p className="gift-details-reserve-taken">Этот подарок уже забронирован другим пользователем.</p>
+                ) : null}
+                {res && reserveStatus !== 'gifted' && res.canReserve ? (
+                  <button
+                    type="button"
+                    className="action-btn primary-btn gift-details-reserve-btn"
+                    onClick={() => onReserveFriendGift && onReserveFriendGift()}
+                    disabled={isGiftReserveSubmitting || !res.canReserve}
+                  >
+                    {isGiftReserveSubmitting ? 'Бронирование…' : 'Забронировать подарок'}
+                  </button>
+                ) : null}
+                {res &&
+                reserveStatus !== 'gifted' &&
+                !res.canReserve &&
+                !res.isReserved &&
+                !res.reservedByMe ? (
+                  <p className="gift-details-reserve-hint">Бронирование сейчас недоступно.</p>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -303,5 +464,62 @@ export default function GiftDetailsPage({
     </div>
   );
 
-  return <GiftDetailsChrome backHref={backHref} main={mainCard} aside={siblingAside} />;
+  return (
+    <>
+      <GiftDetailsChrome backHref={backHref} main={mainCard} aside={siblingAside} />
+      {cancelReservationModalOpen ? (
+        <CancelReservationConfirmModal
+          onClose={() => !isGiftReserveSubmitting && setCancelReservationModalOpen(false)}
+          onConfirm={handleConfirmCancelReservation}
+          isSubmitting={isGiftReserveSubmitting}
+          errorMessage={cancelReservationModalError}
+        />
+      ) : null}
+      {reportGiftModalOpen ? (
+        <ReportGiftModal
+          giftTitle={createGiftForm.title}
+          isLightTheme={isLightTheme}
+          isSubmitting={isGiftReportSubmitting}
+          errorMessage={reportGiftModalError}
+          onClose={() => !isGiftReportSubmitting && setReportGiftModalOpen(false)}
+          onSubmit={async ({ reasonId, description }) => {
+            if (!onSubmitGiftReport) {
+              return;
+            }
+            setReportGiftModalError('');
+            const result = await onSubmitGiftReport({
+              reasonId,
+              description,
+              contextWishlistId: contextListId,
+            });
+            if (result && result.ok) {
+              setReportGiftModalOpen(false);
+            } else if (result && result.error) {
+              setReportGiftModalError(result.error);
+            }
+          }}
+        />
+      ) : null}
+      {deleteGiftModalOpen ? (
+        <DeleteGiftConfirmModal
+          giftTitle={createGiftForm.title}
+          onClose={() => !isCreateGiftSubmitting && setDeleteGiftModalOpen(false)}
+          onConfirm={async () => {
+            if (!onDeleteGift) {
+              return;
+            }
+            setDeleteGiftModalError('');
+            const result = await onDeleteGift(true);
+            if (result && result.ok === false && result.error) {
+              setDeleteGiftModalError(result.error);
+            } else if (result && result.ok) {
+              setDeleteGiftModalOpen(false);
+            }
+          }}
+          isDeleting={isCreateGiftSubmitting}
+          errorMessage={deleteGiftModalError}
+        />
+      ) : null}
+    </>
+  );
 }

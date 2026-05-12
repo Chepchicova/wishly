@@ -1,0 +1,19 @@
+.friend-wishlist-detail-page .friend-wl-detail-shell {
+  grid-template-columns: 1fr;
+}
+
+.friend-wl-detail-card .wishlist-content-head {
+  margin-bottom: 1rem;
+}
+
+.friend-wl-detail-owner-line {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.friend-wl-detail-owner-label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+}
+

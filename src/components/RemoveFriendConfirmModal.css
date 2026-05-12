@@ -1,0 +1,64 @@
+/* Портал в document.body — вне .app-shell; z-index и светлая тема задаются здесь */
+
+.remove-friend-confirm-backdrop {
+  z-index: 100;
+}
+
+.remove-friend-modal__delete-btn {
+  white-space: nowrap;
+}
+
+/* Светлая тема (модалка не наследует .app-shell--theme-light) */
+.remove-friend-confirm-portal--light .remove-friend-confirm-backdrop {
+  background: rgba(15, 23, 42, 0.38);
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal.auth-modal {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.12);
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal__close {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal__close:hover {
+  color: #0f172a;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal__title {
+  color: #0f172a;
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal__text {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal .action-btn.delete-wishlist-modal__btn-cancel {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  color: #1e293b;
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal .action-btn.delete-wishlist-modal__btn-cancel:hover:not(:disabled) {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.28);
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal .action-btn.delete-wishlist-modal__btn-delete {
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal .action-btn.delete-wishlist-modal__btn-delete:hover:not(:disabled) {
+  background: #b91c1c;
+  border-color: #991b1b;
+  color: #ffffff;
+}
+
+.remove-friend-confirm-portal--light .delete-wishlist-modal__error {
+  color: #b91c1c;
+}

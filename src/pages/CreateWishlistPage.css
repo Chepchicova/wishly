@@ -25,6 +25,16 @@
   margin-top: 0.35rem;
 }
 
+.create-wishlist-page.create-gift-page .create-gift-wishlists-field + .create-gift-wishlists-field {
+  margin-top: 0.5rem;
+}
+
+/* Без внутреннего скролла: блоки «Кто видит список», друзья и бронирования — как один список, листается страница */
+.create-wishlist-page .create-gift-wishlist-list {
+  max-height: none;
+  overflow-y: visible;
+}
+
 /* Единая типографика подписей полей (как у «Дата события», «Описание» и т.д.) */
 .wishlist-create-form .form-label-row,
 .wishlist-create-form.profile-edit-form label,
@@ -93,7 +103,8 @@
 }
 
 .wishlist-icon-chevron {
-  font-size: 0.75rem;
+  font-size: 1.2rem;
+  line-height: 1;
   color: rgba(255, 255, 255, 0.45);
 }
 
@@ -137,33 +148,25 @@
   word-break: break-word;
 }
 
-.privacy-settings-strip {
-  width: 100%;
-  text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  padding: 0.65rem 0.75rem;
-  cursor: pointer;
-  display: grid;
+/* Две строки в ячейке списка (как подпись + пояснение уровня доступа) */
+.create-gift-wishlist-title--stacked {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.2rem;
-  color: inherit;
 }
 
-.privacy-settings-strip:hover {
-  border-color: rgba(129, 140, 248, 0.35);
-  background: rgba(99, 102, 241, 0.08);
-}
-
-.privacy-settings-strip-title {
-  font-size: 0.98rem;
+.wishlist-privacy-row-label {
   font-weight: 600;
   color: #f3f4f6;
 }
 
-.privacy-settings-strip-hint {
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.52);
+.wishlist-privacy-row-hint {
+  font-size: 0.76rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .wishlist-create-message {

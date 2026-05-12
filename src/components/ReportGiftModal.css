@@ -1,0 +1,207 @@
+.report-gift-modal-portal {
+  position: relative;
+  z-index: 100;
+}
+
+.report-gift-modal-backdrop {
+  z-index: 100;
+}
+
+.report-gift-modal {
+  max-width: 26rem;
+  width: min(26rem, calc(100vw - 2rem));
+}
+
+.report-gift-modal__intro {
+  margin-top: 0.35rem;
+}
+
+.report-gift-modal__reasons {
+  border: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+}
+
+.report-gift-modal__legend {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 0;
+  margin-bottom: 0.45rem;
+}
+
+.report-gift-modal-portal--light .report-gift-modal__legend {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.report-gift-modal__reason-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.report-gift-modal__reason-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.report-gift-modal-portal--light .report-gift-modal__reason-label {
+  color: #0f172a;
+}
+
+.report-gift-modal__reason-label input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+.report-gift-modal__reason-hint {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.report-gift-modal-portal--light .report-gift-modal__reason-hint {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.report-gift-modal__details-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.85rem;
+}
+
+.report-gift-modal__details-caption {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.report-gift-modal-portal--light .report-gift-modal__details-caption {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.report-gift-modal__required {
+  color: #f87171;
+}
+
+.report-gift-modal__textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 5.5rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.25);
+  color: #f8fafc;
+  font-size: 0.875rem;
+  font-family: inherit;
+  line-height: 1.45;
+}
+
+.report-gift-modal-portal--light .report-gift-modal__textarea {
+  border-color: rgba(15, 23, 42, 0.22);
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.report-gift-modal-portal--light .report-gift-modal__textarea::placeholder {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.report-gift-modal__textarea:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.65);
+  outline-offset: 1px;
+}
+
+.report-gift-modal__counter {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  align-self: flex-end;
+}
+
+.report-gift-modal-portal--light .report-gift-modal__counter {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.report-gift-modal__submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------------------------------------
+   Светлая тема: модалка в createPortal(document.body) — вне .app-shell,
+   поэтому дублируем стили, которые иначе задаёт только .app-shell--theme-light
+   ------------------------------------------------------------------------- */
+.report-gift-modal-portal--light .auth-modal-backdrop {
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.report-gift-modal-portal--light .delete-wishlist-modal.auth-modal.report-gift-modal {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.14);
+  color: #0f172a;
+}
+
+.report-gift-modal-portal--light .delete-wishlist-modal__close {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.report-gift-modal-portal--light .delete-wishlist-modal__close:hover {
+  color: #0f172a;
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.report-gift-modal-portal--light .delete-wishlist-modal__title {
+  color: #0f172a;
+}
+
+.report-gift-modal-portal--light .delete-wishlist-modal__text,
+.report-gift-modal-portal--light .report-gift-modal__intro {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.report-gift-modal-portal--light .report-gift-modal__reason-label input[type='radio'] {
+  accent-color: #4f46e5;
+}
+
+.report-gift-modal-portal--light .delete-wishlist-modal .action-btn.delete-wishlist-modal__btn-cancel {
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(15, 23, 42, 0.22);
+  color: #1e293b;
+}
+
+.report-gift-modal-portal--light
+  .delete-wishlist-modal
+  .action-btn.delete-wishlist-modal__btn-cancel:hover:not(:disabled) {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.3);
+}
+
+.report-gift-modal-portal--light .report-gift-modal .action-btn.primary-btn.report-gift-modal__submit {
+  background: rgba(99, 102, 241, 0.22);
+  border-color: rgba(79, 70, 229, 0.5);
+  color: #312e81;
+}
+
+.report-gift-modal-portal--light
+  .report-gift-modal
+  .action-btn.primary-btn.report-gift-modal__submit:hover:not(:disabled) {
+  background: rgba(99, 102, 241, 0.32);
+  border-color: rgba(67, 56, 202, 0.55);
+  color: #1e1b4b;
+}
+
+.report-gift-modal-portal--light .delete-wishlist-modal__error {
+  color: #b91c1c;
+}

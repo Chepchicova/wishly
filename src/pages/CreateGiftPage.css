@@ -88,8 +88,9 @@
     0 0 0 2px rgba(99, 102, 241, 0.22);
 }
 
-/* Чекбокс только для логики и скринридеров; визуально выбор — подсветка строки */
-.create-gift-checkbox-label input[type='checkbox'] {
+/* Чекбокс / радио только для логики и скринридеров; визуально выбор — подсветка строки */
+.create-gift-checkbox-label input[type='checkbox'],
+.create-gift-checkbox-label input[type='radio'] {
   position: absolute;
   width: 1px;
   height: 1px;

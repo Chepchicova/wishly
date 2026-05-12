@@ -1,0 +1,117 @@
+.gifts-to-friends-page {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.gifts-to-friends-panel {
+  padding: 1.15rem 1.25rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.gifts-to-friends-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.gifts-to-friends-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.7rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.gifts-to-friends-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(129, 140, 248, 0.35);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+
+.gifts-to-friends-row:focus-visible {
+  outline: 2px solid rgba(129, 140, 248, 0.75);
+  outline-offset: 2px;
+}
+
+.gifts-to-friends-thumb {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 11px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.gifts-to-friends-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gifts-to-friends-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.gifts-to-friends-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gifts-to-friends-meta {
+  font-size: 0.875rem;
+  color: rgba(226, 232, 240, 0.62);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gifts-to-friends-badge {
+  flex-shrink: 0;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  color: #bfdbfe;
+}
+
+.gifts-to-friends-badge--fulfilled {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: rgba(74, 222, 128, 0.45);
+  color: #bbf7d0;
+}
+
+.gifts-to-friends-status,
+.gifts-to-friends-empty,
+.gifts-to-friends-error {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.gifts-to-friends-error {
+  margin-top: 0.65rem;
+  color: #fca5a5;
+}
