@@ -2635,9 +2635,24 @@ async function handleGetGiftsToFriends(response, viewerIdUser) {
         g.image_path,
         g.price,
         g.status AS gift_status,
+        MAX(r.reserved_at) AS reserved_at,
         MAX(ou.id_user) AS owner_id_user,
         MAX(ou.name) AS owner_name,
-        MIN(w.wishlist_id) AS wishlist_id
+        MIN(w.wishlist_id) AS wishlist_id,
+        (SELECT w5.title_wishlist
+         FROM gift_wishlists gw5
+         INNER JOIN wishlists w5 ON w5.wishlist_id = gw5.wishlist_id
+         INNER JOIN users ou5 ON ou5.id = w5.owner_id
+         WHERE gw5.gift_id = g.gift_id AND ou5.id <> me.id
+         ORDER BY w5.wishlist_id ASC
+         LIMIT 1) AS wishlist_title,
+        (SELECT w5.date_event
+         FROM gift_wishlists gw5
+         INNER JOIN wishlists w5 ON w5.wishlist_id = gw5.wishlist_id
+         INNER JOIN users ou5 ON ou5.id = w5.owner_id
+         WHERE gw5.gift_id = g.gift_id AND ou5.id <> me.id
+         ORDER BY w5.wishlist_id ASC
+         LIMIT 1) AS wishlist_date_event
       FROM reservations r
       INNER JOIN gifts g ON g.gift_id = r.gift_id
       INNER JOIN users me ON me.id = r.reserved_by
@@ -2647,7 +2662,7 @@ async function handleGetGiftsToFriends(response, viewerIdUser) {
       WHERE me.id_user = ?
         AND ou.id <> me.id
       GROUP BY g.gift_id, g.title_gift, g.image_path, g.price, g.status
-      ORDER BY g.gift_id DESC
+      ORDER BY MAX(r.reserved_at) DESC, g.gift_id DESC
       `,
       [viewerIdUser]
     );
@@ -2656,6 +2671,21 @@ async function handleGetGiftsToFriends(response, viewerIdUser) {
       const st = row.gift_status && typeof row.gift_status === 'string' ? row.gift_status : 'free';
       const rowState = st === 'gifted' ? 'fulfilled' : 'reserved';
       const stateLabel = st === 'gifted' ? 'Исполнено' : 'Забронировано';
+      const ra = row.reserved_at;
+      const reservedAt =
+        ra instanceof Date
+          ? ra.toISOString()
+          : ra != null && String(ra).trim() !== ''
+            ? String(ra)
+            : null;
+      let wishlistDateEvent = null;
+      const wde = row.wishlist_date_event;
+      if (wde instanceof Date && !Number.isNaN(wde.getTime())) {
+        wishlistDateEvent = wde.toISOString().slice(0, 10);
+      } else if (wde != null && String(wde).trim() !== '') {
+        const head = String(wde).trim().slice(0, 10);
+        wishlistDateEvent = /^\d{4}-\d{2}-\d{2}$/.test(head) ? head : null;
+      }
       return {
         giftId: String(row.gift_id),
         title: row.title_gift || '',
@@ -2664,9 +2694,12 @@ async function handleGetGiftsToFriends(response, viewerIdUser) {
         giftStatus: st,
         rowState,
         stateLabel,
+        reservedAt,
         ownerIdUser: Number(row.owner_id_user),
         ownerName: row.owner_name || '',
         wishlistId: row.wishlist_id != null ? String(row.wishlist_id) : null,
+        wishlistTitle: row.wishlist_title != null ? String(row.wishlist_title).trim() : '',
+        wishlistDateEvent,
       };
     });
 

@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import BottomToast from '../components/BottomToast';
 import CancelReservationConfirmModal from '../components/CancelReservationConfirmModal';
 import DeleteGiftConfirmModal from '../components/DeleteGiftConfirmModal';
 import ReportGiftModal from '../components/ReportGiftModal';
@@ -76,6 +77,7 @@ export default function GiftDetailsPage({
   const [cancelReservationModalError, setCancelReservationModalError] = useState('');
   const [reportGiftModalOpen, setReportGiftModalOpen] = useState(false);
   const [reportGiftModalError, setReportGiftModalError] = useState('');
+  const [reportSuccessToastOpen, setReportSuccessToastOpen] = useState(false);
   const [deleteGiftModalOpen, setDeleteGiftModalOpen] = useState(false);
   const [deleteGiftModalError, setDeleteGiftModalError] = useState('');
   const giftDotsMenuRef = useRef(null);
@@ -102,9 +104,14 @@ export default function GiftDetailsPage({
     setCancelReservationModalError('');
     setReportGiftModalOpen(false);
     setReportGiftModalError('');
+    setReportSuccessToastOpen(false);
     setDeleteGiftModalOpen(false);
     setDeleteGiftModalError('');
   }, [giftId]);
+
+  const dismissReportSuccessToast = useCallback(() => {
+    setReportSuccessToastOpen(false);
+  }, []);
 
   useEffect(() => {
     if (!isGiftMenuOpen) {
@@ -494,6 +501,7 @@ export default function GiftDetailsPage({
             });
             if (result && result.ok) {
               setReportGiftModalOpen(false);
+              setReportSuccessToastOpen(true);
             } else if (result && result.error) {
               setReportGiftModalError(result.error);
             }
@@ -520,6 +528,13 @@ export default function GiftDetailsPage({
           errorMessage={deleteGiftModalError}
         />
       ) : null}
+      <BottomToast
+        open={reportSuccessToastOpen}
+        message="Спасибо. Ваша жалоба будет рассмотрена."
+        isLightTheme={isLightTheme}
+        duration={4800}
+        onClose={dismissReportSuccessToast}
+      />
     </>
   );
 }

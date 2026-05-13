@@ -15,6 +15,7 @@ import GiftDetailsPage from '../pages/GiftDetailsPage';
 import CreateWishlistPage from '../pages/CreateWishlistPage';
 import ProfilePage from '../pages/ProfilePage';
 import WishlistsPage from '../pages/WishlistsPage';
+import AiAssistantPage from '../pages/AiAssistantPage';
 import { parseAppRoutes } from '../navigation/parseAppRoutes';
 import { useAppTheme } from '../hooks/useAppTheme';
 import { useAuthSession } from '../hooks/useAuthSession';
@@ -46,6 +47,13 @@ export default function MainLayout() {
   const auth = useAuthSession();
   const { isDarkTheme, setIsDarkTheme } = useAppTheme();
 
+  useEffect(() => {
+    document.documentElement.classList.toggle('app-theme-light', !isDarkTheme);
+    return () => {
+      document.documentElement.classList.remove('app-theme-light');
+    };
+  }, [isDarkTheme]);
+
   const wishlists = useWishlistsState(
     auth.currentUser,
     auth.clearAuthSession,
@@ -63,7 +71,8 @@ export default function MainLayout() {
     auth.clearAuthSession,
     routes.showFriendsPage,
     routes.friendsPreviewOwnerIdUser,
-    routes.showGiftsToFriendsPage
+    routes.showGiftsToFriendsPage,
+    routes.showAiAssistantPage
   );
 
   const forms = useGiftWishlistForms({
@@ -73,6 +82,7 @@ export default function MainLayout() {
     editingWishlistId: routes.editingWishlistId,
     viewingGiftId: routes.viewingGiftId,
     browserPathname: routes.browserPathname,
+    browserSearch: routes.browserSearch,
     giftDetailsOwnerIdUser: routes.giftDetailsOwnerIdUser,
     refreshFriendWishlistsForOwner: friends.fetchFriendWishlistsForOwner,
   });
@@ -300,6 +310,15 @@ export default function MainLayout() {
           />
         )}
 
+        {routes.showAiAssistantPage && (
+          <AiAssistantPage
+            currentUser={auth.currentUser}
+            onOpenLogin={auth.openLoginModal}
+            friendsData={friends.friendsData}
+            isFriendsLoading={friends.isFriendsLoading}
+          />
+        )}
+
         {routes.showGiftsToFriendsPage && (
           <GiftsToFriendsPage
             currentUser={auth.currentUser}
@@ -307,6 +326,13 @@ export default function MainLayout() {
             items={friends.giftsToFriends}
             isLoading={friends.isGiftsToFriendsLoading}
             message={friends.giftsToFriendsMessage}
+            clearAuthSession={auth.clearAuthSession}
+            onAfterCancelReservation={async (ownerIdUser) => {
+              await friends.loadGiftsToFriends();
+              if (ownerIdUser != null && String(ownerIdUser).trim() !== '') {
+                friends.fetchFriendWishlistsForOwner(ownerIdUser);
+              }
+            }}
           />
         )}
 

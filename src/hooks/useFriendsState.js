@@ -31,7 +31,8 @@ export function useFriendsState(
   clearAuthSession,
   showFriendsPage,
   friendsPreviewOwnerIdUser = null,
-  showGiftsToFriendsPage = false
+  showGiftsToFriendsPage = false,
+  showAiAssistantPage = false
 ) {
   const [friendsData, setFriendsData] = useState([]);
   const [isFriendsLoading, setIsFriendsLoading] = useState(false);
@@ -185,11 +186,22 @@ export function useFriendsState(
   }, [showGiftsToFriendsPage, currentUser?.id_user, loadGiftsToFriends]);
 
   useEffect(() => {
-    if (showFriendsPage && currentUser?.id_user) {
+    if (!currentUser?.id_user) {
+      return;
+    }
+    if (showFriendsPage) {
       loadFriends();
       loadIncomingFriendRequests();
+    } else if (showAiAssistantPage) {
+      loadFriends();
     }
-  }, [showFriendsPage, currentUser?.id_user, loadFriends, loadIncomingFriendRequests]);
+  }, [
+    showFriendsPage,
+    showAiAssistantPage,
+    currentUser?.id_user,
+    loadFriends,
+    loadIncomingFriendRequests,
+  ]);
 
   useEffect(() => {
     if (!showFriendsPage || !currentUser?.id_user) {

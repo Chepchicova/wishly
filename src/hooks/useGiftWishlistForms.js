@@ -36,6 +36,7 @@ export function useGiftWishlistForms({
   editingWishlistId,
   viewingGiftId,
   browserPathname,
+  browserSearch = '',
   giftDetailsOwnerIdUser = null,
   refreshFriendWishlistsForOwner,
 }) {
@@ -130,13 +131,20 @@ export function useGiftWishlistForms({
     if (browserPathname !== '/wishlists/gifts/new') {
       return;
     }
-    const params = new URLSearchParams(window.location.search);
+    const raw = browserSearch.startsWith('?') ? browserSearch.slice(1) : browserSearch;
+    const params = new URLSearchParams(raw);
     const listId = params.get('list');
     const initialLists =
       listId && /^\d+$/.test(String(listId).trim()) ? [String(Number(listId))] : [];
+    const titleRaw = params.get('title');
+    const descriptionRaw = params.get('description');
+    const prefilledTitle =
+      titleRaw != null ? String(titleRaw).trim().slice(0, 200) : '';
+    const prefilledDescription =
+      descriptionRaw != null ? String(descriptionRaw).trim().slice(0, 5000) : '';
     setCreateGiftForm({
-      title: '',
-      description: '',
+      title: prefilledTitle,
+      description: prefilledDescription,
       price: '',
       url: '',
       imageDataUrl: '',
@@ -144,7 +152,7 @@ export function useGiftWishlistForms({
       selectedWishlistIds: initialLists,
     });
     setCreateGiftMessage('');
-  }, [browserPathname]);
+  }, [browserPathname, browserSearch]);
 
   useEffect(() => {
     if (!viewingGiftId || !currentUser?.id_user) {

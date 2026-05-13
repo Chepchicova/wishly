@@ -8,6 +8,7 @@ export function parseAppRoutes(browserPathname, browserSearch = '') {
   const currentPathname =
     browserPathname === '/profile/settings' ? '/profile' : browserPathname;
   const pathNorm = browserPathname.replace(/\/$/, '') || '/';
+  const showAiAssistantPage = pathNorm === '/ai';
   const showGiftsToFriendsPage = pathNorm === '/gifts';
   const showWishlistsPage = currentPathname === '/' || currentPathname.startsWith('/wishlists');
   const showFriendsPage = currentPathname.startsWith('/friends');
@@ -67,8 +68,10 @@ export function parseAppRoutes(browserPathname, browserSearch = '') {
 
   return {
     browserPathname,
+    browserSearch: browserSearch || '',
     currentPathname,
     showWishlistsPage,
+    showAiAssistantPage,
     showGiftsToFriendsPage,
     showFriendsPage,
     showFriendWishlistDetailPage,

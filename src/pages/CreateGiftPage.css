@@ -23,26 +23,6 @@
   gap: 0.35rem;
   max-height: 240px;
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(129, 140, 248, 0.55) rgba(255, 255, 255, 0.08);
-}
-
-.create-gift-wishlist-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.create-gift-wishlist-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 999px;
-}
-
-.create-gift-wishlist-list::-webkit-scrollbar-thumb {
-  background: rgba(129, 140, 248, 0.45);
-  border-radius: 999px;
-}
-
-.create-gift-wishlist-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(129, 140, 248, 0.65);
 }
 
 .create-gift-wishlist-item {
