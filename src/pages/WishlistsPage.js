@@ -20,7 +20,7 @@ export default function WishlistsPage({
   return (
     <section className="wishlists-page">
       <div className="wishlists-head">
-        <div>
+        <div className="wishlists-head-text">
           <h1 className="wishlists-title">Мои списки желаний</h1>
           <p className="wishlists-subtitle">Создавайте и организуйте свои списки желаний</p>
         </div>
@@ -29,7 +29,7 @@ export default function WishlistsPage({
             + Новый список желаний
           </a>
         ) : (
-          <button type="button" className="action-btn primary-btn" onClick={onOpenLogin}>
+          <button type="button" className="action-btn primary-btn wishlists-new-link" onClick={onOpenLogin}>
             + Новый список желаний
           </button>
         )}
@@ -200,7 +200,7 @@ export default function WishlistsPage({
               </div>
             </>
           ) : (
-            <div className="empty-note empty-content">Выберите список желаний слева</div>
+            <div className="empty-note empty-content">Выберите список желаний выше</div>
           )}
           {wishlistsMessage && <div className="empty-note">{wishlistsMessage}</div>}
         </section>

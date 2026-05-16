@@ -93,6 +93,33 @@ html.app-theme-light *::-webkit-scrollbar-thumb:hover {
   color: #1e293b;
 }
 
+.app-shell--theme-light .header-burger {
+  border-color: rgba(15, 23, 42, 0.22);
+  background: rgba(255, 255, 255, 0.92);
+  color: #1e293b;
+}
+
+.app-shell--theme-light .header-burger:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(15, 23, 42, 0.3);
+}
+
+@media (max-width: 768px) {
+  .app-shell--theme-light .header-nav {
+    background: rgba(255, 255, 255, 0.97);
+  }
+
+  .app-shell--theme-light .header-nav .nav-link {
+    border-color: rgba(15, 23, 42, 0.12);
+    background: rgba(15, 23, 42, 0.03);
+    color: #334155;
+  }
+
+  .app-shell--theme-light .header-nav .nav-link:hover {
+    background: rgba(15, 23, 42, 0.06);
+  }
+}
+
 .app-shell--theme-light .site-footer {
   background: rgba(255, 255, 255, 0.72);
   border-top: 1px solid rgba(15, 23, 42, 0.14);
